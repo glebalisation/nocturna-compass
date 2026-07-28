@@ -42,7 +42,7 @@ export default function SubscribeForm({ source = 'homepage' }: { source?: string
     return (
       <div style={{ maxWidth: 560, margin: '28px auto 0', textAlign: 'left' }}>
         <div className="notice">✓ You&apos;re in. First picks arrive Friday 11:00 AM PT.</div>
-        <div style={{ border: '1px solid var(--green-deep)', borderRadius: 6, padding: '20px 22px', marginTop: 14, background: 'rgba(23,59,44,.18)' }}>
+        <div style={{ border: '1px solid var(--green-deep)', borderRadius: 6, padding: '20px 22px', marginTop: 14, background: 'rgba(26,29,32,.06)' }}>
           <div className="eyebrow" style={{ marginBottom: 10 }}>Unlock private picks</div>
           <p style={{ fontSize: 14, color: 'var(--text)' }}>
             Invite <b>3 friends</b> and get access to private picks, guestlist drops

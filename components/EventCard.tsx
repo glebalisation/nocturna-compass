@@ -9,10 +9,10 @@ function fmtDate(d: string) {
 
 /** Generative flyer gradient when there's no image yet. */
 function flyer(e: NocturnaEvent) {
-  const hue = 110 + (e.title.length * 7) % 60;
-  return `radial-gradient(120% 90% at 24% 10%, hsl(${hue} 45% 16%) 0%, transparent 60%),
-          radial-gradient(100% 100% at 80% 90%, hsl(${hue + 20} 55% 10%) 0%, #0B0E0C 70%),
-          repeating-linear-gradient(52deg, transparent 0 9px, hsl(${hue} 30% 12% / .5) 9px 10px)`;
+  const lightness = 14 + (e.title.length * 3) % 10;
+  return `radial-gradient(120% 90% at 24% 10%, hsl(220 8% ${lightness + 8}%) 0%, transparent 60%),
+          radial-gradient(100% 100% at 80% 90%, hsl(220 6% ${lightness}%) 0%, #05070B 70%),
+          repeating-linear-gradient(52deg, transparent 0 9px, hsl(220 6% ${lightness}% / .5) 9px 10px)`;
 }
 
 export default function EventCard({ e }: { e: NocturnaEvent }) {

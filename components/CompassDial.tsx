@@ -151,8 +151,8 @@ export default function CompassDial({ events }: { events: LocatedEvent[] }) {
       <svg className="compass-dial" viewBox="0 0 300 300" role="img" aria-label="Compass pointing to the nearest party">
         <defs>
           <linearGradient id="needleGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#8FE3B0" />
-            <stop offset="100%" stopColor="#2E8C5D" />
+            <stop offset="0%" stopColor="#1A1D20" />
+            <stop offset="100%" stopColor="#B7BBC0" />
           </linearGradient>
         </defs>
 

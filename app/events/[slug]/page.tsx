@@ -55,10 +55,10 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
     description: e.description ?? undefined,
   };
 
-  const hue = 110 + (e.title.length * 7) % 60;
+  const lightness = 14 + (e.title.length * 3) % 10;
   const visualStyle = e.image_url
     ? { backgroundImage: `url(${e.image_url})` }
-    : { background: `radial-gradient(120% 90% at 24% 10%, hsl(${hue} 45% 16%) 0%, transparent 60%), radial-gradient(100% 100% at 80% 90%, hsl(${hue + 20} 55% 10%) 0%, #0B0E0C 70%)` };
+    : { background: `radial-gradient(120% 90% at 24% 10%, hsl(220 8% ${lightness + 8}%) 0%, transparent 60%), radial-gradient(100% 100% at 80% 90%, hsl(220 6% ${lightness}%) 0%, #05070B 70%)` };
 
   return (
     <main>
