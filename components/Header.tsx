@@ -17,6 +17,7 @@ export default function Header() {
           <Link href="/weekend">Weekend</Link>
           <Link href="/events">All events</Link>
           <Link href="/map">Map</Link>
+          <Link href="/compass">Compass</Link>
           <Link href="/submit">Submit</Link>
           <Link href="/#subscribe" className="nav-cta">Weekly guide</Link>
         </nav>

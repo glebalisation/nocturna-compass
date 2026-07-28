@@ -7,6 +7,8 @@ export interface Collected {
   venue_name?: string;
   address?: string;
   neighborhood?: string;
+  lat?: number;
+  lng?: number;
   genres?: string[];
   lineup?: string[];
   promoter?: string;

@@ -133,6 +133,33 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
 .wk-item small{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
 .wk-item:hover b{color:var(--glow)}
 
+/* compass */
+.compass-page{font-family:'Montserrat',var(--sans)}
+.compass-start{margin-top:40px;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.compass-status{font-family:'Montserrat',var(--sans);font-size:13px;font-weight:400;color:var(--muted);max-width:420px}
+.compass-status.err{color:#f0a3a3}
+.compass-wrap{margin-top:40px;display:flex;flex-direction:column;align-items:center;gap:26px;max-width:420px}
+.compass-dial{width:min(72vw,300px);height:min(72vw,300px);filter:drop-shadow(0 0 26px rgba(143,227,176,.16))}
+.compass-ring{fill:none;stroke:var(--line);stroke-width:1}
+.compass-tick{stroke:var(--line);stroke-width:1}
+.compass-tick.major{stroke:#3a463f;stroke-width:1.5}
+.compass-tick.cardinal{stroke:var(--text);stroke-width:2}
+.compass-label{font-family:'Montserrat',var(--sans);font-size:12px;font-weight:700;letter-spacing:.04em;fill:var(--muted);text-anchor:middle;dominant-baseline:middle}
+.compass-label.north{fill:var(--glow)}
+.compass-center-dot{fill:var(--text)}
+.compass-needle-tip{fill:url(#needleGrad)}
+.compass-needle-tail{fill:rgba(231,236,232,.22)}
+.compass-readout{text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;font-family:'Montserrat',var(--sans)}
+.compass-party-name{font-size:18px;font-weight:600}
+.compass-party-meta{font-size:12.5px;font-weight:400;color:var(--muted)}
+.compass-party-meta strong{color:var(--glow);font-weight:600}
+.compass-links{display:flex;gap:16px;margin-top:4px}
+.compass-link{font-size:12px;font-weight:600;letter-spacing:.03em;border-bottom:1px solid var(--line);padding-bottom:1px;transition:color .2s,border-color .2s}
+.compass-link:hover{color:var(--glow);border-color:var(--glow)}
+.compass-list{width:100%;display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
+.compass-list::-webkit-scrollbar{display:none}
+.compass-list .chip{font-family:'Montserrat',var(--sans);flex:0 0 auto;white-space:nowrap}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
 }

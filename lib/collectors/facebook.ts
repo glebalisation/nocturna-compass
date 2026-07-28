@@ -18,7 +18,7 @@ export async function collectFacebookGraph(pageIdOrName: string): Promise<Collec
   const token = process.env.FB_ACCESS_TOKEN;
   if (!token) return [];
   const url = `https://graph.facebook.com/v19.0/${encodeURIComponent(pageIdOrName)}/events` +
-    `?fields=name,start_time,end_time,place,description,cover,ticket_uri,is_online&limit=50&access_token=${token}`;
+    `?fields=name,start_time,end_time,place{name,location},description,cover,ticket_uri,is_online&limit=50&access_token=${token}`;
   const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
   const json = await res.json().catch(() => null);
   if (!Array.isArray(json?.data)) return [];
@@ -32,6 +32,8 @@ export async function collectFacebookGraph(pageIdOrName: string): Promise<Collec
       end_time: e.end_time ? String(e.end_time).slice(11, 16) : undefined,
       venue_name: clamp(e.place?.name, 120),
       address: clamp(e.place?.location?.street, 200),
+      lat: typeof e.place?.location?.latitude === 'number' ? e.place.location.latitude : undefined,
+      lng: typeof e.place?.location?.longitude === 'number' ? e.place.location.longitude : undefined,
       description: clamp(e.description, 1200),
       image_url: clamp(e.cover?.source, 400),
       ticket_url: clamp(e.ticket_uri, 400),

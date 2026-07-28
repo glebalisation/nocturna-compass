@@ -13,6 +13,8 @@ export interface NocturnaEvent {
   venue_name?: string | null;
   neighborhood?: string | null;
   address?: string | null;
+  lat?: number | null;
+  lng?: number | null;
   secret_location?: boolean;
   genres: string[];
   lineup: string[];
@@ -33,6 +35,13 @@ export interface NocturnaEvent {
   source_url?: string | null;
   contact_email?: string | null;
   created_at?: string;
+}
+
+export type LocatedEvent = NocturnaEvent & { lat: number; lng: number };
+
+/** Events the compass can point at: has coordinates and isn't a secret-location drop. */
+export function hasCoords(e: NocturnaEvent): e is LocatedEvent {
+  return !e.secret_location && typeof e.lat === 'number' && typeof e.lng === 'number';
 }
 
 export const GENRES = ['techno', 'house', 'melodic', 'bass', 'minimal', 'electro'] as const;

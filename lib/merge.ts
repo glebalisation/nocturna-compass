@@ -27,7 +27,7 @@ export async function upsertCollected(
 
   const fp = fingerprint(ev.title, ev.date, ev.venue_name);
   const { data: sameDay } = await sb.from('events')
-    .select('id,title,venue_name,ticket_url,source_links,genres,lineup,tags,image_url,start_time,end_time,price,age_restriction,address,promoter,description')
+    .select('id,title,venue_name,ticket_url,source_links,genres,lineup,tags,image_url,start_time,end_time,price,age_restriction,address,promoter,description,lat,lng')
     .eq('date', ev.date).limit(200);
 
   const match = (sameDay ?? []).find(e =>
@@ -50,6 +50,8 @@ export async function upsertCollected(
       price: match.price ?? ev.price ?? null,
       age_restriction: match.age_restriction ?? ev.age_restriction ?? null,
       address: match.address ?? ev.address ?? null,
+      lat: match.lat ?? ev.lat ?? null,
+      lng: match.lng ?? ev.lng ?? null,
       promoter: match.promoter ?? ev.promoter ?? null,
       description: match.description ?? ev.description ?? null,
       lineup: match.lineup?.length ? match.lineup : (ev.lineup ?? []),
@@ -73,6 +75,8 @@ export async function upsertCollected(
     venue_name: ev.venue_name ?? null,
     neighborhood: ev.neighborhood ?? null,
     address: ev.address ?? null,
+    lat: ev.lat ?? null,
+    lng: ev.lng ?? null,
     genres: ev.genres ?? [],
     lineup: ev.lineup ?? [],
     promoter: ev.promoter ?? null,
