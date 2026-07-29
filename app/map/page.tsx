@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import CaliforniaPlanner from '@/components/CaliforniaPlanner';
 import { NEIGHBORHOODS } from '@/lib/types';
 import { getEvents, laToday } from '@/lib/data';
 
@@ -19,15 +20,18 @@ export default async function MapPage() {
 
   return (
     <main>
-      <section className="container">
-        <div className="eyebrow">Map view</div>
-        <h1>The <em>city map</em></h1>
-        <p className="lede">
-          Venues, warehouses, rooftops and pop-ups — clustered by neighborhood.
-          Interactive map (Mapbox/Leaflet) lands in the next release; the neighborhood
-          index below is live now.
-        </p>
-        <div style={{ marginTop: 44, maxWidth: 640 }}>
+      <div className="container planner-shell">
+        <CaliforniaPlanner events={events} />
+      </div>
+      <section className="container neighborhood-index">
+        <div className="section-head">
+          <div>
+            <div className="eyebrow">California index</div>
+            <h2>Los Angeles <em>districts.</em></h2>
+          </div>
+          <p>Browse the rooms and parties neighborhood by neighborhood.</p>
+        </div>
+        <div className="neighborhood-list">
           {NEIGHBORHOODS.map(n => (
             <Link key={n.slug} href={`/la/${n.slug}`} className="wk-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <b>{n.name}</b>
