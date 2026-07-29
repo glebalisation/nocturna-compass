@@ -1,5 +1,8 @@
 /** Geodesic helpers for pointing the compass at the nearest event. */
 
+/** Fixed reference point (Downtown LA) used to compute a stable bearing per event when there's no live user location. */
+export const LA_CENTER = { lat: 34.0407, lon: -118.2468 };
+
 const toRad = (d: number) => (d * Math.PI) / 180;
 const toDeg = (r: number) => (r * 180) / Math.PI;
 
