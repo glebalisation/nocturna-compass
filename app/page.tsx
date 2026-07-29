@@ -18,7 +18,7 @@ export default async function HomePage() {
       <section className="container hero-with-compass" style={{ paddingTop: 'clamp(40px,6vw,90px)' }}>
         <div>
           <div className="eyebrow">Los Angeles · Underground Intelligence</div>
-          <h1>Find your <em>direction</em><br />in LA nightlife.</h1>
+          <h1>What&rsquo;s happening beneath the surface.</h1>
           <p className="lede">
             Nocturna Compass tracks the best electronic music events, warehouse parties,
             clubs, DJs and underground gatherings across Los Angeles — curated, verified,
