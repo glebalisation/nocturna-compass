@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PlayerProvider from '@/components/PlayerProvider';
+import StickyPlayer from '@/components/StickyPlayer';
 
 const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nocturnacompass.com';
 
@@ -32,9 +34,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <Header />
-        {children}
-        <Footer />
+        <PlayerProvider>
+          <Header />
+          {children}
+          <Footer />
+          <StickyPlayer />
+        </PlayerProvider>
       </body>
     </html>
   );

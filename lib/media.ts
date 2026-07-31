@@ -1,3 +1,5 @@
+import type { Track } from './player';
+
 export type MediaKind =
   | 'article' | 'set' | 'video' | 'interview' | 'venue'
   | 'recap' | 'playlist' | 'photo' | 'recommendation';
@@ -10,6 +12,7 @@ export interface MediaItem {
   duration: string;   // "6 min read", "58 min", etc.
   source: string;     // "Nocturna Editorial", "Nocturna Originals"...
   href?: string;       // only set when there's a real destination on the site today
+  track?: Track;       // set only when there's real audio to hand to the sticky player
 }
 
 export const KIND_LABEL: Record<MediaKind, string> = {
@@ -44,7 +47,15 @@ export const KIND_ICON: Record<MediaKind, string> = {
  */
 export const DEMO_MEDIA: MediaItem[] = [
   { id: 'm1', kind: 'recap', title: 'Inside Concrete Ritual: a night at Vault 1904', meta: 'Downtown LA · warehouse techno', duration: '6 min read', source: 'Nocturna Editorial', href: '/events' },
-  { id: 'm2', kind: 'set', title: 'Vera Holt — live at the vault', meta: 'Recorded set · techno', duration: '58 min', source: 'Nocturna Originals' },
+  {
+    id: 'm2', kind: 'set', title: 'Vera Holt — live at the vault', meta: 'Recorded set · techno', duration: '58 min', source: 'Nocturna Originals',
+    track: {
+      id: 'm2', kind: 'audio', title: 'Vera Holt — live at the vault', artist: 'Vera Holt',
+      src: '/audio/demo-set.wav',
+      description: 'A short placeholder clip standing in for the full 58-minute recording, until the real set is uploaded.',
+      relatedHref: '/events', relatedLabel: 'Browse live events →',
+    },
+  },
   { id: 'm3', kind: 'interview', title: 'Ama Diallo on building a house night from scratch', meta: 'Arts District residency', duration: '9 min read', source: 'Nocturna Editorial' },
   { id: 'm4', kind: 'venue', title: 'Signal Room: the Silver Lake room built for minimal', meta: 'Venue profile', duration: '4 min read', source: 'Nocturna Editorial', href: '/la/silver-lake' },
   { id: 'm5', kind: 'photo', title: 'Static Bloom, in stills', meta: 'Echo Park · electro', duration: '18 photos', source: 'Nocturna Originals' },

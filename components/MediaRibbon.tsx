@@ -3,10 +3,12 @@
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { KIND_ICON, KIND_LABEL, type MediaItem } from '@/lib/media';
+import { usePlayer } from './PlayerProvider';
 
 const SPEED_PX_PER_SEC = 22; // slow, ambient — an editorial layer, not a marquee
 
 function Card({ item }: { item: MediaItem }) {
+  const { play } = usePlayer();
   const inner = (
     <>
       <div className="media-card-visual" data-kind={item.kind}>
@@ -21,11 +23,23 @@ function Card({ item }: { item: MediaItem }) {
         </div>
         <div className="media-card-source">
           {item.source}
-          {item.href && <span className="media-card-go" aria-hidden="true">{item.kind === 'article' || item.kind === 'recap' || item.kind === 'interview' ? 'Read →' : 'Open →'}</span>}
+          {(item.href || item.track) && (
+            <span className="media-card-go" aria-hidden="true">
+              {item.track ? 'Play →' : item.kind === 'article' || item.kind === 'recap' || item.kind === 'interview' ? 'Read →' : 'Open →'}
+            </span>
+          )}
         </div>
       </div>
     </>
   );
+
+  if (item.track) {
+    return (
+      <button type="button" className="media-card media-card-button" onClick={() => play(item.track!)} draggable={false}>
+        {inner}
+      </button>
+    );
+  }
 
   return item.href
     ? <Link href={item.href} className="media-card" draggable={false}>{inner}</Link>
@@ -46,6 +60,8 @@ export default function MediaRibbon({ items }: { items: MediaItem[] }) {
   // actually accumulates. This ref is the source of truth instead.
   const posRef = useRef(0);
   const lastProgrammaticAtRef = useRef(0);
+  const pointerDownRef = useRef<{ x: number; scrollLeft: number; pointerId: number } | null>(null);
+  const DRAG_THRESHOLD = 6; // px of movement before a pointerdown counts as a drag, not a click
 
   const looped = [...items, ...items];
 
@@ -79,17 +95,28 @@ export default function MediaRibbon({ items }: { items: MediaItem[] }) {
   function onPointerDown(e: React.PointerEvent<HTMLDivElement>) {
     const el = railRef.current;
     if (!el) return;
-    draggingRef.current = true;
-    el.setPointerCapture?.(e.pointerId);
-    dragStartRef.current = { x: e.clientX, scrollLeft: el.scrollLeft };
+    // Don't engage drag (or capture the pointer) yet — a plain click on a card
+    // must reach it as a normal click. Only pointermove past the threshold
+    // turns this into a drag.
+    pointerDownRef.current = { x: e.clientX, scrollLeft: el.scrollLeft, pointerId: e.pointerId };
   }
   function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
-    if (!draggingRef.current) return;
     const el = railRef.current;
     if (!el) return;
+    if (draggingRef.current) {
+      el.scrollLeft = dragStartRef.current.scrollLeft - (e.clientX - dragStartRef.current.x);
+      return;
+    }
+    const down = pointerDownRef.current;
+    if (!down || Math.abs(e.clientX - down.x) < DRAG_THRESHOLD) return;
+    draggingRef.current = true;
+    dragStartRef.current = { x: down.x, scrollLeft: down.scrollLeft };
+    el.setPointerCapture?.(down.pointerId);
     el.scrollLeft = dragStartRef.current.scrollLeft - (e.clientX - dragStartRef.current.x);
   }
   function onPointerUp() {
+    pointerDownRef.current = null;
+    if (!draggingRef.current) return;
     draggingRef.current = false;
     if (railRef.current) posRef.current = railRef.current.scrollLeft;
   }
