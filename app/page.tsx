@@ -6,6 +6,7 @@ import LocationPicker from '@/components/LocationPicker';
 import DayNightFader, { type DayNight } from '@/components/DayNightFader';
 import LAMapBackground from '@/components/LAMapBackground';
 import MediaRibbon from '@/components/MediaRibbon';
+import DecorativeType from '@/components/DecorativeType';
 import { getEvents, laToday, isDemo } from '@/lib/data';
 import { NEIGHBORHOODS, CATEGORIES, type CategorySlug } from '@/lib/types';
 import { DEMO_MEDIA } from '@/lib/media';
@@ -36,6 +37,7 @@ export default async function HomePage({
   return (
     <main>
       <section className="container hero-with-compass" style={{ paddingTop: 'clamp(40px,6vw,90px)' }}>
+        <DecorativeType />
         <div>
           <div className="eyebrow">Los Angeles · Underground Intelligence</div>
           <h1>What&rsquo;s happening beneath the surface.</h1>
