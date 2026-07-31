@@ -5,8 +5,10 @@ import SubscribeBand from '@/components/SubscribeBand';
 import LocationPicker from '@/components/LocationPicker';
 import DayNightFader, { type DayNight } from '@/components/DayNightFader';
 import LAMapBackground from '@/components/LAMapBackground';
+import MediaRibbon from '@/components/MediaRibbon';
 import { getEvents, laToday, isDemo } from '@/lib/data';
 import { NEIGHBORHOODS, CATEGORIES, type CategorySlug } from '@/lib/types';
+import { DEMO_MEDIA } from '@/lib/media';
 
 export const dynamic = 'force-dynamic';
 
@@ -82,6 +84,13 @@ export default async function HomePage({
             ? featured.map(e => <EventCard key={e.id} e={e} />)
             : <div className="empty">Tonight is quiet — check the weekend guide.</div>}
         </div>
+      </section>
+
+      <section className="container" style={{ paddingTop: 0 }}>
+        <div className="section-head">
+          <h2>From the <span className="accent">Nocturna</span> loop</h2>
+        </div>
+        <MediaRibbon items={DEMO_MEDIA} />
       </section>
 
       <SubscribeBand source="homepage" />
