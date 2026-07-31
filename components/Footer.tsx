@@ -13,8 +13,7 @@ export default function Footer() {
             <b>Discover</b>
             <Link href="/tonight">Tonight in LA</Link><br />
             <Link href="/weekend">This weekend</Link><br />
-            <Link href="/events">Event directory</Link><br />
-            <Link href="/map">Map view</Link>
+            <Link href="/events">Event directory</Link>
           </div>
           <div>
             <b>Community</b>
@@ -24,6 +23,7 @@ export default function Footer() {
           </div>
           <div>
             <b>Nocturna</b>
+            <Link href="/about">About us</Link><br />
             <a href="https://instagram.com/nocturna_la_" target="_blank" rel="noopener">Instagram</a><br />
             <Link href="/#subscribe">Newsletter</Link>
           </div>

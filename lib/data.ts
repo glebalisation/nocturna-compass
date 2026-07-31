@@ -1,5 +1,8 @@
 import { supabasePublic } from './supabase';
-import type { NocturnaEvent } from './types';
+import type { NocturnaEvent, CategorySlug } from './types';
+import { CATEGORIES, eventCategory } from './types';
+
+const NON_MUSIC_CATEGORY_SLUGS = CATEGORIES.map(c => c.slug).filter(s => s !== 'music');
 
 /* ------------------------------------------------------------------ */
 /* Demo seed: the site works out of the box before Supabase is wired.  */
@@ -19,6 +22,8 @@ export const DEMO_EVENTS: NocturnaEvent[] = [
   { id: 'd6', slug: 'low-orbit-' + plus(2), title: 'Low Orbit', date: plus(2), start_time: '22:00', venue_name: 'Signal Room', neighborhood: 'Silver Lake', lat: 34.0900, lng: -118.2708, genres: ['minimal'], lineup: ['Hishi Tanaka', 'Grain Theory'], price: '$15', status: 'approved', source: 'manual' },
   { id: 'd7', slug: 'afterlight-' + plus(3), title: 'Afterlight', date: plus(3), start_time: '04:00', venue_name: 'Room Zero', neighborhood: 'Downtown LA', lat: 34.0455, lng: -118.2506, genres: ['techno'], lineup: ['Rotating residents'], price: '$20', status: 'approved', source: 'manual' },
   { id: 'd8', slug: 'pier-static-day-series-' + plus(4), title: 'Pier Static — Day Series', date: plus(4), start_time: '14:00', venue_name: 'Ocean Deck', neighborhood: 'Venice', lat: 33.9850, lng: -118.4695, genres: ['house'], lineup: ['Coastal Frequencies crew'], is_free: true, price: 'Free', status: 'approved', source: 'manual' },
+  { id: 'd9', slug: 'concrete-and-light-' + plus(1), title: 'Concrete & Light', date: plus(1), start_time: '11:00', end_time: '18:00', venue_name: 'Bendix Building', neighborhood: 'Downtown LA', lat: 34.0448, lng: -118.2523, genres: [], lineup: ['LA Sculpture Collective'], tags: ['art'], indoor: true, is_free: true, price: 'Free', status: 'approved', source: 'manual', description: 'A one-day group show of light and concrete installations from LA sculptors.' },
+  { id: 'd10', slug: 'night-signals-film-' + plus(3), title: 'Night Signals: A Film Night', date: plus(3), start_time: '20:00', venue_name: 'Regent Theater', neighborhood: 'Downtown LA', lat: 34.0442, lng: -118.2506, genres: [], lineup: ['Independent LA filmmakers'], tags: ['film'], indoor: true, price: '$12', status: 'approved', source: 'manual' },
 ];
 
 export function isDemo(): boolean {
@@ -32,6 +37,8 @@ export interface EventQuery {
   to?: string;        // YYYY-MM-DD inclusive
   genre?: string;
   tag?: string;       // tags[] contains
+  category?: CategorySlug;
+  indoor?: boolean;
   neighborhood?: string;
   free?: boolean;
   q?: string;         // search: title / venue / promoter / lineup
@@ -47,6 +54,8 @@ export async function getEvents(q: EventQuery = {}): Promise<NocturnaEvent[]> {
       (!q.to || e.date <= q.to) &&
       (!q.genre || e.genres.includes(q.genre)) &&
       (!q.tag || (e.tags ?? []).includes(q.tag) || e.genres.includes(q.tag)) &&
+      (!q.category || eventCategory(e) === q.category) &&
+      (q.indoor === undefined || (e.indoor ?? true) === q.indoor) &&
       (!q.neighborhood || e.neighborhood === q.neighborhood) &&
       (!q.free || e.is_free) &&
       (!needle ||
@@ -67,6 +76,9 @@ export async function getEvents(q: EventQuery = {}): Promise<NocturnaEvent[]> {
   if (q.to) query = query.lte('date', q.to);
   if (q.genre) query = query.contains('genres', [q.genre]);
   if (q.tag) query = query.contains('tags', [q.tag]);
+  if (q.category === 'music') query = query.not('tags', 'ov', `{${NON_MUSIC_CATEGORY_SLUGS.join(',')}}`);
+  else if (q.category) query = query.contains('tags', [q.category]);
+  if (q.indoor !== undefined) query = query.eq('indoor', q.indoor);
   if (q.neighborhood) query = query.eq('neighborhood', q.neighborhood);
   if (q.free) query = query.eq('is_free', true);
   if (q.q) {

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import EventCard from '@/components/EventCard';
 import SubscribeBand from '@/components/SubscribeBand';
 import { getEvents, dayRange } from '@/lib/data';
-import { GENRES, NEIGHBORHOODS } from '@/lib/types';
+import { GENRES, NEIGHBORHOODS, CATEGORIES, type CategorySlug } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,16 +25,19 @@ const DAYS = [
 export default async function EventsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ genre?: string; hood?: string; free?: string; day?: string; tag?: string; q?: string; featured?: string }>;
+  searchParams: Promise<{ genre?: string; hood?: string; free?: string; day?: string; tag?: string; q?: string; featured?: string; category?: string; indoor?: string }>;
 }) {
   const sp = await searchParams;
   const hood = NEIGHBORHOODS.find(n => n.slug === sp.hood)?.name;
+  const category = CATEGORIES.find(c => c.slug === sp.category)?.slug;
   const { from, to } = dayRange(sp.day);
 
   let events = await getEvents({
     from, to,
     genre: sp.genre,
     tag: sp.tag,
+    category: category as CategorySlug | undefined,
+    indoor: sp.indoor === '1' ? true : sp.indoor === '0' ? false : undefined,
     neighborhood: hood,
     free: sp.free === '1',
     q: sp.q,
@@ -43,7 +46,7 @@ export default async function EventsPage({
   if (sp.featured === '1') events = events.filter(e => e.featured);
 
   const link = (params: Record<string, string | undefined>) => {
-    const merged = { genre: sp.genre, hood: sp.hood, free: sp.free, day: sp.day, tag: sp.tag, q: sp.q, featured: sp.featured, ...params };
+    const merged = { genre: sp.genre, hood: sp.hood, free: sp.free, day: sp.day, tag: sp.tag, q: sp.q, featured: sp.featured, category: sp.category, indoor: sp.indoor, ...params };
     const qs = Object.entries(merged).filter(([, v]) => v).map(([k, v]) => `${k}=${encodeURIComponent(v!)}`).join('&');
     return `/events${qs ? '?' + qs : ''}`;
   };
@@ -74,6 +77,14 @@ export default async function EventsPage({
             </Link>
           ))}
 
+          <div className="flabel">Category</div>
+          <Link className={`chip ${!sp.category ? 'on' : ''}`} href={link({ category: undefined, genre: undefined })}>All</Link>
+          {CATEGORIES.map(c => (
+            <Link key={c.slug} className={`chip ${sp.category === c.slug ? 'on' : ''}`} href={link({ category: sp.category === c.slug ? undefined : c.slug, genre: undefined })}>
+              {c.name}
+            </Link>
+          ))}
+
           <div className="flabel">Picks</div>
           <Link className={`chip ${sp.featured === '1' ? 'on' : ''}`} href={link({ featured: sp.featured === '1' ? undefined : '1' })}>★ Featured picks</Link>
           <Link className={`chip ${sp.free === '1' ? 'on' : ''}`} href={link({ free: sp.free === '1' ? undefined : '1' })}>Free events</Link>
@@ -81,11 +92,20 @@ export default async function EventsPage({
           <Link className={`chip ${sp.tag === 'afterhours' ? 'on' : ''}`} href={link({ tag: sp.tag === 'afterhours' ? undefined : 'afterhours' })}>Afterhours</Link>
           <Link className={`chip ${sp.tag === 'rooftop' ? 'on' : ''}`} href={link({ tag: sp.tag === 'rooftop' ? undefined : 'rooftop' })}>Rooftop</Link>
 
-          <div className="flabel">Genre</div>
-          <Link className={`chip ${!sp.genre ? 'on' : ''}`} href={link({ genre: undefined })}>All</Link>
-          {GENRES.map(g => (
-            <Link key={g} className={`chip ${sp.genre === g ? 'on' : ''}`} href={link({ genre: g })}>{g}</Link>
-          ))}
+          <div className="flabel">Indoor / outdoor</div>
+          <Link className={`chip ${!sp.indoor ? 'on' : ''}`} href={link({ indoor: undefined })}>All</Link>
+          <Link className={`chip ${sp.indoor === '1' ? 'on' : ''}`} href={link({ indoor: sp.indoor === '1' ? undefined : '1' })}>Indoor</Link>
+          <Link className={`chip ${sp.indoor === '0' ? 'on' : ''}`} href={link({ indoor: sp.indoor === '0' ? undefined : '0' })}>Outdoor</Link>
+
+          {(!sp.category || sp.category === 'music') && (
+            <>
+              <div className="flabel">Genre</div>
+              <Link className={`chip ${!sp.genre ? 'on' : ''}`} href={link({ genre: undefined })}>All</Link>
+              {GENRES.map(g => (
+                <Link key={g} className={`chip ${sp.genre === g ? 'on' : ''}`} href={link({ genre: g })}>{g}</Link>
+              ))}
+            </>
+          )}
 
           <div className="flabel">Neighborhood</div>
           <Link className={`chip ${!sp.hood ? 'on' : ''}`} href={link({ hood: undefined })}>All</Link>

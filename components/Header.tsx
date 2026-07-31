@@ -16,14 +16,7 @@ export default function Header() {
         </Link>
 
         <div className="nav-right">
-          <nav className={`nav${open ? ' open' : ''}`} aria-label="Main">
-            <Link href="/tonight" onClick={close}>Tonight</Link>
-            <Link href="/weekend" onClick={close}>Weekend</Link>
-            <Link href="/events" onClick={close}>All events</Link>
-            <Link href="/map" onClick={close}>Map</Link>
-            <Link href="/compass" onClick={close}>Compass</Link>
-            <Link href="/submit" onClick={close}>Submit</Link>
-          </nav>
+          <Link href="/events" className="nav-primary" onClick={close}>Events</Link>
           <Link href="/#subscribe" className="nav-cta" onClick={close}>Weekly guide</Link>
           <button
             type="button"
@@ -39,8 +32,18 @@ export default function Header() {
                 <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
               )}
             </svg>
+            <span className="nav-toggle-label">Menu</span>
           </button>
         </div>
+
+        <nav className={`nav-menu${open ? ' open' : ''}`} aria-label="Secondary">
+          <Link href="/tonight" onClick={close}>Tonight in LA</Link>
+          <Link href="/weekend" onClick={close}>This weekend</Link>
+          <Link href="/about" onClick={close}>About us</Link>
+          <Link href="/submit" onClick={close}>Submit an event</Link>
+          <a href="https://instagram.com/nocturna_la_" target="_blank" rel="noopener" onClick={close}>Instagram</a>
+          <Link href="/#subscribe" onClick={close}>Newsletter</Link>
+        </nav>
       </div>
     </header>
   );
