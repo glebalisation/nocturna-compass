@@ -3,6 +3,7 @@ import EventCard from '@/components/EventCard';
 import HomeCompass from '@/components/HomeCompass';
 import SubscribeBand from '@/components/SubscribeBand';
 import LocationPicker from '@/components/LocationPicker';
+import DayNightFader, { type DayNight } from '@/components/DayNightFader';
 import { getEvents, laToday, isDemo } from '@/lib/data';
 import { NEIGHBORHOODS, CATEGORIES, type CategorySlug } from '@/lib/types';
 
@@ -11,19 +12,20 @@ export const dynamic = 'force-dynamic';
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ hood?: string; category?: string }>;
+  searchParams: Promise<{ hood?: string; category?: string; when?: string }>;
 }) {
   const sp = await searchParams;
   const district = NEIGHBORHOODS.find(n => n.slug === sp.hood);
   const category = CATEGORIES.find(c => c.slug === sp.category)?.slug as CategorySlug | undefined;
+  const when = sp.when === 'day' || sp.when === 'night' ? sp.when : undefined;
 
   const today = laToday();
-  const tonight = await getEvents({ from: today, to: today, neighborhood: district?.name, category, limit: 6 });
-  const upcoming = await getEvents({ from: today, neighborhood: district?.name, category, limit: 6 });
+  const tonight = await getEvents({ from: today, to: today, neighborhood: district?.name, category, when, limit: 6 });
+  const upcoming = await getEvents({ from: today, neighborhood: district?.name, category, when, limit: 6 });
   const compassEvents = await getEvents({ from: today, limit: 20 });
   const featured = tonight.length ? tonight : upcoming;
   const homeLink = (params: Record<string, string | undefined>) => {
-    const merged = { hood: sp.hood, category: sp.category, ...params };
+    const merged = { hood: sp.hood, category: sp.category, when: sp.when, ...params };
     const qs = Object.entries(merged).filter(([, v]) => v).map(([k, v]) => `${k}=${encodeURIComponent(v!)}`).join('&');
     return `/${qs ? '?' + qs : ''}`;
   };
@@ -61,6 +63,8 @@ export default async function HomePage({
         </div>
 
         <LocationPicker basePath="/" hood={sp.hood} />
+
+        <DayNightFader basePath="/" value={when as DayNight} params={{ hood: sp.hood, category: sp.category }} />
 
         <div className="filters" style={{ marginTop: 18 }}>
           <Link className={`chip ${!sp.category ? 'on' : ''}`} href={homeLink({ category: undefined })}>All</Link>

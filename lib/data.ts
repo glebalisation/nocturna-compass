@@ -39,10 +39,24 @@ export interface EventQuery {
   tag?: string;       // tags[] contains
   category?: CategorySlug;
   indoor?: boolean;
+  when?: 'day' | 'night'; // start_time before/after 18:00 (06:00-18:00 counts as day)
   neighborhood?: string;
   free?: boolean;
   q?: string;         // search: title / venue / promoter / lineup
   limit?: number;
+}
+
+const DAY_NIGHT_CUTOFF = '18:00';
+const DAY_START = '06:00';
+
+/** Events with no start_time are ambiguous and pass either filter. */
+function isDaytime(start_time?: string | null): boolean {
+  if (!start_time) return true;
+  return start_time >= DAY_START && start_time < DAY_NIGHT_CUTOFF;
+}
+function isNighttime(start_time?: string | null): boolean {
+  if (!start_time) return true;
+  return !isDaytime(start_time);
 }
 
 export async function getEvents(q: EventQuery = {}): Promise<NocturnaEvent[]> {
@@ -56,6 +70,7 @@ export async function getEvents(q: EventQuery = {}): Promise<NocturnaEvent[]> {
       (!q.tag || (e.tags ?? []).includes(q.tag) || e.genres.includes(q.tag)) &&
       (!q.category || eventCategory(e) === q.category) &&
       (q.indoor === undefined || (e.indoor ?? true) === q.indoor) &&
+      (!q.when || (q.when === 'day' ? isDaytime(e.start_time) : isNighttime(e.start_time))) &&
       (!q.neighborhood || e.neighborhood === q.neighborhood) &&
       (!q.free || e.is_free) &&
       (!needle ||
@@ -79,6 +94,8 @@ export async function getEvents(q: EventQuery = {}): Promise<NocturnaEvent[]> {
   if (q.category === 'music') query = query.not('tags', 'ov', `{${NON_MUSIC_CATEGORY_SLUGS.join(',')}}`);
   else if (q.category) query = query.contains('tags', [q.category]);
   if (q.indoor !== undefined) query = query.eq('indoor', q.indoor);
+  if (q.when === 'day') query = query.gte('start_time', DAY_START).lt('start_time', DAY_NIGHT_CUTOFF);
+  else if (q.when === 'night') query = query.or(`start_time.gte.${DAY_NIGHT_CUTOFF},start_time.lt.${DAY_START}`);
   if (q.neighborhood) query = query.eq('neighborhood', q.neighborhood);
   if (q.free) query = query.eq('is_free', true);
   if (q.q) {

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import EventCard from '@/components/EventCard';
 import SubscribeBand from '@/components/SubscribeBand';
+import DayNightFader, { type DayNight } from '@/components/DayNightFader';
 import { getEvents, dayRange } from '@/lib/data';
 import { GENRES, NEIGHBORHOODS, CATEGORIES, type CategorySlug } from '@/lib/types';
 
@@ -25,11 +26,12 @@ const DAYS = [
 export default async function EventsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ genre?: string; hood?: string; free?: string; day?: string; tag?: string; q?: string; featured?: string; category?: string; indoor?: string }>;
+  searchParams: Promise<{ genre?: string; hood?: string; free?: string; day?: string; tag?: string; q?: string; featured?: string; category?: string; indoor?: string; when?: string }>;
 }) {
   const sp = await searchParams;
   const hood = NEIGHBORHOODS.find(n => n.slug === sp.hood)?.name;
   const category = CATEGORIES.find(c => c.slug === sp.category)?.slug;
+  const when = sp.when === 'day' || sp.when === 'night' ? sp.when : undefined;
   const { from, to } = dayRange(sp.day);
 
   let events = await getEvents({
@@ -38,6 +40,7 @@ export default async function EventsPage({
     tag: sp.tag,
     category: category as CategorySlug | undefined,
     indoor: sp.indoor === '1' ? true : sp.indoor === '0' ? false : undefined,
+    when,
     neighborhood: hood,
     free: sp.free === '1',
     q: sp.q,
@@ -46,7 +49,7 @@ export default async function EventsPage({
   if (sp.featured === '1') events = events.filter(e => e.featured);
 
   const link = (params: Record<string, string | undefined>) => {
-    const merged = { genre: sp.genre, hood: sp.hood, free: sp.free, day: sp.day, tag: sp.tag, q: sp.q, featured: sp.featured, category: sp.category, indoor: sp.indoor, ...params };
+    const merged = { genre: sp.genre, hood: sp.hood, free: sp.free, day: sp.day, tag: sp.tag, q: sp.q, featured: sp.featured, category: sp.category, indoor: sp.indoor, when: sp.when, ...params };
     const qs = Object.entries(merged).filter(([, v]) => v).map(([k, v]) => `${k}=${encodeURIComponent(v!)}`).join('&');
     return `/events${qs ? '?' + qs : ''}`;
   };
@@ -68,6 +71,12 @@ export default async function EventsPage({
           {sp.genre && <input type="hidden" name="genre" value={sp.genre} />}
           <button className="btn btn-ghost" type="submit">Search</button>
         </form>
+
+        <DayNightFader
+          basePath="/events"
+          value={when as DayNight}
+          params={{ genre: sp.genre, hood: sp.hood, free: sp.free, day: sp.day, tag: sp.tag, q: sp.q, featured: sp.featured, category: sp.category, indoor: sp.indoor }}
+        />
 
         <div className="filters" style={{ marginTop: 26 }}>
           <div className="flabel">When</div>
