@@ -3,6 +3,8 @@
   --ink:#F4F3EE; --panel:#E3E5E4; --panel-2:#EDEDE7; --line:#B7BBC0;
   --green-deep:#1A1D20; --green:#1A1D20; --glow:#05070B;
   --text:#1A1D20; --muted:#6C7075;
+  /* Restrained accent, used sparingly (compass pointer, pulses) — not the general UI green above. */
+  --accent-pointer:#173D2B; --accent-pointer-light:#2E6B4C;
   --mono:'Montserrat', system-ui, sans-serif;
   --sans:'Montserrat', system-ui, sans-serif;
 }
@@ -161,15 +163,15 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
 .compass-status.err{color:#f0a3a3}
 .compass-wrap{margin-top:40px;display:flex;flex-direction:column;align-items:center;gap:26px;max-width:420px}
 .compass-dial{width:min(72vw,300px);height:min(72vw,300px);filter:drop-shadow(0 0 26px rgba(5,7,11,.14))}
-.compass-ring{fill:none;stroke:var(--line);stroke-width:1}
-.compass-tick{stroke:var(--line);stroke-width:1}
-.compass-tick.major{stroke:#1A1D20;stroke-width:1.5}
-.compass-tick.cardinal{stroke:var(--text);stroke-width:2}
+.compass-ring{fill:none;stroke:var(--line);stroke-width:1.5}
+.compass-tick{stroke:var(--line);stroke-width:1.5}
+.compass-tick.major{stroke:#1A1D20;stroke-width:2.5}
+.compass-tick.cardinal{stroke:var(--text);stroke-width:3.5}
 .compass-label{font-family:'Montserrat',var(--sans);font-size:12px;font-weight:700;letter-spacing:.04em;fill:var(--muted);text-anchor:middle;dominant-baseline:middle}
 .compass-label.north{fill:var(--glow)}
 .compass-center-dot{fill:var(--text)}
 .compass-needle-tip{fill:url(#needleGrad)}
-.compass-needle-tail{fill:rgba(26,29,32,.28)}
+.compass-needle-tail{fill:rgba(23,61,43,.32)}
 .compass-readout{text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;font-family:'Montserrat',var(--sans)}
 .compass-party-name{font-size:18px;font-weight:600}
 .compass-party-meta{font-size:12.5px;font-weight:400;color:var(--muted)}
@@ -248,7 +250,14 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
 .home-compass-dial{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 30px rgba(5,7,11,.12))}
 .home-compass-needle{transition:transform .18s ease-out}
 .home-compass-mark{fill:var(--line);transition:r .2s ease,fill .2s ease}
-.home-compass-mark.active{fill:var(--glow)}
+.home-compass-mark.active{fill:var(--accent-pointer)}
+.home-compass-mark.pulsing{animation:mark-pulse .48s ease-out}
+@keyframes mark-pulse{
+  0%{r:4.5}
+  40%{r:9;fill:var(--accent-pointer-light)}
+  100%{r:4.5;fill:var(--accent-pointer)}
+}
+@media (prefers-reduced-motion: reduce){.home-compass-mark.pulsing{animation:none}}
 
 .home-compass-pop{
   position:absolute;transform:translate(-50%,-50%) scale(.85);width:168px;

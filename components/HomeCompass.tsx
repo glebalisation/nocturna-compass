@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   LA_CENTER,
@@ -67,18 +67,86 @@ function assignAngles(events: NocturnaEvent[]): Placed[] {
   return [...located, ...placedRest].sort((a, b) => a.angle - b.angle);
 }
 
+// Spring constants tuned for a fast snap with one visible mechanical overshoot,
+// settling in ~1s. See lib/compass-math for the shared angle helpers.
+const SPRING_STIFFNESS = 130;
+const SPRING_DAMPING = 13;
+const TENSION_KICK = 40; // small counter-impulse before the snap, for a "wind-up" feel
+const SETTLE_ANGLE_EPS = 0.4;
+const SETTLE_VELOCITY_EPS = 1.2;
+
 export default function HomeCompass({ events }: { events: NocturnaEvent[] }) {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const rotorRef = useRef(0);
+  const targetRef = useRef(0);
+  const angleRef = useRef(0);
+  const velocityRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+  const lastFrameRef = useRef<number | null>(null);
+  const reducedMotionRef = useRef(false);
   const [rotorAngle, setRotorAngle] = useState(0);
   const [mouseAngle, setMouseAngle] = useState<number | null>(null);
   const [hovering, setHovering] = useState(false);
+  const [pulseId, setPulseId] = useState<string | null>(null);
+  const wasSettledRef = useRef(true);
 
   const placed = useMemo(() => assignAngles(events), [events]);
 
+  useEffect(() => {
+    reducedMotionRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }, []);
+
+  useEffect(() => () => { if (rafRef.current != null) cancelAnimationFrame(rafRef.current); }, []);
+
+  function tick(now: number) {
+    const last = lastFrameRef.current ?? now;
+    const dt = Math.min((now - last) / 1000, 1 / 30);
+    lastFrameRef.current = now;
+
+    const accel = SPRING_STIFFNESS * (targetRef.current - angleRef.current) - SPRING_DAMPING * velocityRef.current;
+    velocityRef.current += accel * dt;
+    angleRef.current += velocityRef.current * dt;
+    setRotorAngle(angleRef.current);
+
+    const settled =
+      Math.abs(targetRef.current - angleRef.current) < SETTLE_ANGLE_EPS &&
+      Math.abs(velocityRef.current) < SETTLE_VELOCITY_EPS;
+
+    if (settled) {
+      angleRef.current = targetRef.current;
+      velocityRef.current = 0;
+      setRotorAngle(angleRef.current);
+      lastFrameRef.current = null;
+      rafRef.current = null;
+      if (!wasSettledRef.current) {
+        // Mechanical snap just completed — pulse the guide it landed on.
+        wasSettledRef.current = true;
+      }
+      return;
+    }
+    rafRef.current = requestAnimationFrame(tick);
+  }
+
   function retarget(deg: number) {
-    rotorRef.current += shortestDelta(deg, rotorRef.current);
-    setRotorAngle(rotorRef.current);
+    const delta = shortestDelta(deg, targetRef.current);
+    if (Math.abs(delta) < 0.5) return;
+
+    const wasIdle = rafRef.current == null;
+    targetRef.current += delta;
+    if (wasIdle) {
+      // Tension: a brief counter-impulse before the spring snaps forward.
+      velocityRef.current -= Math.sign(delta || 1) * TENSION_KICK;
+    }
+    wasSettledRef.current = false;
+    if (reducedMotionRef.current) {
+      angleRef.current = targetRef.current;
+      velocityRef.current = 0;
+      setRotorAngle(angleRef.current);
+      return;
+    }
+    if (rafRef.current == null) {
+      lastFrameRef.current = null;
+      rafRef.current = requestAnimationFrame(tick);
+    }
   }
 
   function onMove(e: React.MouseEvent<HTMLDivElement>) {
@@ -110,6 +178,17 @@ export default function HomeCompass({ events }: { events: NocturnaEvent[] }) {
     return best;
   }, [hovering, mouseAngle, placed]);
 
+  // Pulse the active mark once the needle mechanically settles onto it.
+  useEffect(() => {
+    if (!active) return;
+    const t = setTimeout(() => {
+      setPulseId(active.event.id);
+      const clear = setTimeout(() => setPulseId(null), 480);
+      return () => clearTimeout(clear);
+    }, 420);
+    return () => clearTimeout(t);
+  }, [active]);
+
   const ticks = Array.from({ length: TICK_COUNT }, (_, i) => (i * 360) / TICK_COUNT);
   const cardinals = [
     { deg: 0, label: 'N' },
@@ -123,8 +202,8 @@ export default function HomeCompass({ events }: { events: NocturnaEvent[] }) {
       <svg className="home-compass-dial" viewBox="0 0 300 300" role="img" aria-label="Interactive compass of tonight's events">
         <defs>
           <linearGradient id="needleGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1A1D20" />
-            <stop offset="100%" stopColor="#B7BBC0" />
+            <stop offset="0%" stopColor="#173D2B" />
+            <stop offset="100%" stopColor="#2E6B4C" />
           </linearGradient>
         </defs>
 
@@ -164,19 +243,20 @@ export default function HomeCompass({ events }: { events: NocturnaEvent[] }) {
           const x = r3(CENTER + R_MARK * Math.cos(angle));
           const y = r3(CENTER + R_MARK * Math.sin(angle));
           const isActive = active?.event.id === p.event.id;
+          const isPulsing = pulseId === p.event.id;
           return (
             <circle
               key={p.event.id}
               cx={x} cy={y}
               r={isActive ? 4.5 : 2.6}
-              className={`home-compass-mark${isActive ? ' active' : ''}`}
+              className={`home-compass-mark${isActive ? ' active' : ''}${isPulsing ? ' pulsing' : ''}`}
             />
           );
         })}
 
         <g className="home-compass-needle" transform={`rotate(${rotorAngle.toFixed(2)} ${CENTER} ${CENTER})`}>
-          <polygon className="compass-needle-tip" points="150,36 160,150 150,138 140,150" />
-          <polygon className="compass-needle-tail" points="150,264 158,150 150,160 142,150" />
+          <polygon className="compass-needle-tip" points="150,30 163,150 150,134 137,150" />
+          <polygon className="compass-needle-tail" points="150,270 160,150 150,166 140,150" />
         </g>
 
         <circle className="compass-center-dot" cx={CENTER} cy={CENTER} r="5" />

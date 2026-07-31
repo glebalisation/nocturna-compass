@@ -151,8 +151,8 @@ export default function CompassDial({ events }: { events: LocatedEvent[] }) {
       <svg className="compass-dial" viewBox="0 0 300 300" role="img" aria-label="Compass pointing to the nearest party">
         <defs>
           <linearGradient id="needleGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1A1D20" />
-            <stop offset="100%" stopColor="#B7BBC0" />
+            <stop offset="0%" stopColor="#173D2B" />
+            <stop offset="100%" stopColor="#2E6B4C" />
           </linearGradient>
         </defs>
 
@@ -190,8 +190,8 @@ export default function CompassDial({ events }: { events: LocatedEvent[] }) {
         </g>
 
         <g id="compass-needle" transform={`rotate(${target.bearing.toFixed(2)} ${CENTER} ${CENTER})`}>
-          <polygon className="compass-needle-tip" points="150,36 160,150 150,138 140,150" />
-          <polygon className="compass-needle-tail" points="150,264 158,150 150,160 142,150" />
+          <polygon className="compass-needle-tip" points="150,30 163,150 150,134 137,150" />
+          <polygon className="compass-needle-tail" points="150,270 160,150 150,166 140,150" />
         </g>
 
         <circle className="compass-center-dot" cx={CENTER} cy={CENTER} r="5" />
