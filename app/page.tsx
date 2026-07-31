@@ -4,6 +4,7 @@ import HomeCompass from '@/components/HomeCompass';
 import SubscribeBand from '@/components/SubscribeBand';
 import LocationPicker from '@/components/LocationPicker';
 import DayNightFader, { type DayNight } from '@/components/DayNightFader';
+import LAMapBackground from '@/components/LAMapBackground';
 import { getEvents, laToday, isDemo } from '@/lib/data';
 import { NEIGHBORHOODS, CATEGORIES, type CategorySlug } from '@/lib/types';
 
@@ -52,6 +53,7 @@ export default async function HomePage({
           )}
         </div>
         <div className="home-compass-cell">
+          <LAMapBackground />
           <HomeCompass events={compassEvents} />
         </div>
       </section>
