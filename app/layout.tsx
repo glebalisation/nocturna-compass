@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PlayerProvider from '@/components/PlayerProvider';
 import StickyPlayer from '@/components/StickyPlayer';
+import CompassCursor from '@/components/CompassCursor';
 
 const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nocturnacompass.com';
 
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <Footer />
           <StickyPlayer />
+          <CompassCursor />
         </PlayerProvider>
       </body>
     </html>
