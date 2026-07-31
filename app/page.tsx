@@ -8,6 +8,8 @@ import LAMapBackground from '@/components/LAMapBackground';
 import MediaRibbon from '@/components/MediaRibbon';
 import DecorativeType from '@/components/DecorativeType';
 import NeoTribalLines from '@/components/NeoTribalLines';
+import { HomeCompassHoverProvider } from '@/components/HomeCompassHover';
+import EventHoverTarget from '@/components/EventHoverTarget';
 import { getEvents, laToday, isDemo } from '@/lib/data';
 import { NEIGHBORHOODS, CATEGORIES, type CategorySlug } from '@/lib/types';
 import { DEMO_MEDIA } from '@/lib/media';
@@ -37,6 +39,7 @@ export default async function HomePage({
 
   return (
     <main>
+      <HomeCompassHoverProvider>
       <section
         className="container hero-with-compass"
         data-atmosphere={when === 'night' ? 'night' : 'day'}
@@ -91,10 +94,15 @@ export default async function HomePage({
 
         <div className="grid" style={{ marginTop: 26 }}>
           {featured.length
-            ? featured.map(e => <EventCard key={e.id} e={e} />)
+            ? featured.map(e => (
+              <EventHoverTarget key={e.id} event={e}>
+                <EventCard e={e} />
+              </EventHoverTarget>
+            ))
             : <div className="empty">Tonight is quiet — check the weekend guide.</div>}
         </div>
       </section>
+      </HomeCompassHoverProvider>
 
       <section className="container" style={{ paddingTop: 0 }}>
         <div className="section-head">

@@ -11,6 +11,7 @@ import {
   shortestDelta,
 } from '@/lib/compass-math';
 import { hasCoords, type NocturnaEvent } from '@/lib/types';
+import { useCompassHover } from './HomeCompassHover';
 
 const CENTER = 150;
 const R_OUTER = 140;
@@ -166,6 +167,16 @@ export default function HomeCompass({ events }: { events: NocturnaEvent[] }) {
     setMouseAngle(null);
     retarget(0);
   }
+
+  // Hovering an event card elsewhere on the page (a sibling, not a child)
+  // points the needle at it too — but only when the user isn't already
+  // directly steering the dial with their mouse, which always wins.
+  const { hoverAngle } = useCompassHover();
+  useEffect(() => {
+    if (hovering) return;
+    retarget(hoverAngle ?? 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hoverAngle, hovering]);
 
   const active = useMemo(() => {
     if (!hovering || mouseAngle == null) return null;
