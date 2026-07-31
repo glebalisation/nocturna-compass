@@ -37,7 +37,11 @@ export default async function HomePage({
 
   return (
     <main>
-      <section className="container hero-with-compass" style={{ paddingTop: 'clamp(40px,6vw,90px)' }}>
+      <section
+        className="container hero-with-compass"
+        data-atmosphere={when === 'night' ? 'night' : 'day'}
+        style={{ paddingTop: 'clamp(40px,6vw,90px)' }}
+      >
         <DecorativeType />
         <div>
           <div className="eyebrow">Los Angeles · Underground Intelligence</div>
