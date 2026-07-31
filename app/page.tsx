@@ -7,6 +7,7 @@ import DayNightFader, { type DayNight } from '@/components/DayNightFader';
 import LAMapBackground from '@/components/LAMapBackground';
 import MediaRibbon from '@/components/MediaRibbon';
 import DecorativeType from '@/components/DecorativeType';
+import NeoTribalLines from '@/components/NeoTribalLines';
 import { getEvents, laToday, isDemo } from '@/lib/data';
 import { NEIGHBORHOODS, CATEGORIES, type CategorySlug } from '@/lib/types';
 import { DEMO_MEDIA } from '@/lib/media';
@@ -58,9 +59,12 @@ export default async function HomePage({
         </div>
         <div className="home-compass-cell">
           <LAMapBackground />
+          <NeoTribalLines variant="compass" />
           <HomeCompass events={compassEvents} />
         </div>
       </section>
+
+      <div className="container"><NeoTribalLines variant="divider" /></div>
 
       <section className="container">
         <div className="section-head">
