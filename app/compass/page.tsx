@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import CompassDial from '@/components/CompassDial';
-import LAMapBackground from '@/components/LAMapBackground';
 import { getEvents, dayRange } from '@/lib/data';
 import { hasCoords } from '@/lib/types';
 
@@ -20,7 +19,9 @@ export default async function CompassPage() {
   return (
     <main>
       <section className="container compass-page">
-        <LAMapBackground />
+        <div className="compass-map-bg" aria-hidden="true">
+          <img src="/la-map.webp" alt="" />
+        </div>
         <div className="eyebrow">Live · this week</div>
         <h1>Find the <em>closest party</em></h1>
         <p className="lede">
