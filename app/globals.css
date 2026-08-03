@@ -1,7 +1,7 @@
 :root{
   /* Nocturna brand system — Lunar White leads, black reserved for contrast */
   --ink:#F4F3EE; --panel:#E3E5E4; --panel-2:#EDEDE7; --line:#B7BBC0;
-  --green-deep:#1A1D20; --green:#1A1D20; --glow:#05070B;
+  --green-deep:#1F493D; --green:#1F493D; --glow:#05070B;
   --text:#1A1D20; --muted:#6C7075;
   /* Restrained accent, used sparingly (compass pointer, pulses) — not the general UI green above. */
   --accent-pointer:#1F493D; --accent-pointer-light:#38836E;
