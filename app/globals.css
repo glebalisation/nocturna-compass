@@ -109,10 +109,11 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
 .chip.on{background:var(--green-deep);border-color:var(--green);color:var(--ink)}
 
 /* day/night switch — a bigger, vertical sibling of the header's hardware
-   light switch, with a middle detent for "All" and full drag support. */
-.dn-switch{display:flex;flex-direction:column;align-items:center;gap:10px;margin:22px 0 8px;user-select:none}
+   light switch, with a middle detent for "All". Click-to-push only: no
+   drag tracking, so it never reacts to the cursor merely passing over it. */
+.dn-switch{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin:22px 0 8px;user-select:none}
 .dn-switch-label{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
-.dn-switch-plate{position:relative;width:46px;height:124px;border-radius:8px;cursor:pointer;touch-action:none;
+.dn-switch-plate{position:relative;width:46px;height:124px;border-radius:8px;cursor:pointer;
   background:linear-gradient(160deg,#f2f3f2 0%,#b7bbc0 12%,#75797c 26%,#eef0ef 38%,#4a4e51 52%,#c7c9c7 66%,#84888a 78%,#eef0ef 90%,#b7bbc0 100%);
   box-shadow:0 3px 7px rgba(5,7,11,.45),inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 1px rgba(0,0,0,.3),inset 0 0 0 1px rgba(5,7,11,.2)}
 .dn-switch-screw{position:absolute;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;z-index:2;
@@ -132,10 +133,9 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
   background:linear-gradient(160deg,#f4f5f4 0%,#c7c9c7 22%,#6d7174 42%,#eef0ef 54%,#8b8e8c 68%,#c7c9c7 84%,#f4f5f4 100%);
   border:1px solid rgba(0,0,0,.45);
   box-shadow:0 4px 9px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.7),inset 0 -1px 1px rgba(0,0,0,.35);
-  cursor:grab;touch-action:none;transition:transform .2s cubic-bezier(.3,.9,.4,1)}
+  cursor:pointer;transition:transform .2s cubic-bezier(.3,.9,.4,1)}
 .dn-switch-toggle-cap{position:absolute;left:50%;top:7px;width:8px;height:8px;margin-left:-4px;border-radius:50%;
   background:radial-gradient(circle at 35% 35%,#fff,transparent 72%);opacity:.85}
-.dn-switch-toggle.dragging{transition:none;cursor:grabbing}
 .dn-switch-toggle:focus-visible{outline:2px solid var(--accent-pointer);outline-offset:3px}
 @media(max-width:480px){.dn-switch-plate{height:100px}.dn-switch-slot{width:24px;margin-left:-12px}.dn-switch-toggle{width:15px;height:42px}}
 
@@ -344,19 +344,6 @@ html[data-theme="night"] .compass-map-bg img{opacity:.28;filter:grayscale(1) con
   color:var(--text);background-color:transparent;transition:background-color .6s ease,color .6s ease}
 .hero-with-compass h1,.hero-with-compass .lede,.hero-with-compass .eyebrow{transition:color .6s ease}
 
-/* Night atmosphere — re-scopes the shared palette variables for everything
-   inside the hero (compass, map texture, neo-tribal lines, decorative type,
-   buttons all read these same vars already, so nothing else needs to change). */
-.hero-with-compass[data-atmosphere="night"]{
-  background-color:#0F1512;
-  padding:clamp(28px,4vw,48px) clamp(20px,4vw,40px) clamp(36px,5vw,56px);
-  --ink:#0F1512; --panel:#1A2119; --panel-2:#1D251F; --line:#333D35;
-  --text:#F1F0EA; --muted:#8FA096;
-  --glow:#F4F3EE; --green:#3E8F63; --green-deep:#2F6B4A;
-  --accent-pointer:#4CA377; --accent-pointer-light:#79C79E;
-  border-radius:8px;
-}
-.hero-with-compass[data-atmosphere="night"] .notice{background:rgba(244,243,238,.06)}
 .home-compass-cell{position:relative;display:flex;justify-content:center;padding-bottom:44px}
 
 /* decorative background typography — large, faint, drifting; never in the way */

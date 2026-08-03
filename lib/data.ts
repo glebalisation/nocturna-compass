@@ -1,6 +1,7 @@
 import { supabasePublic } from './supabase';
 import type { NocturnaEvent, CategorySlug } from './types';
 import { CATEGORIES, eventCategory } from './types';
+import { DAY_START, DAY_NIGHT_CUTOFF, isDaytime, isNighttime } from './dayNight';
 
 const NON_MUSIC_CATEGORY_SLUGS = CATEGORIES.map(c => c.slug).filter(s => s !== 'music');
 
@@ -44,19 +45,6 @@ export interface EventQuery {
   free?: boolean;
   q?: string;         // search: title / venue / promoter / lineup
   limit?: number;
-}
-
-const DAY_NIGHT_CUTOFF = '18:00';
-const DAY_START = '06:00';
-
-/** Events with no start_time are ambiguous and pass either filter. */
-function isDaytime(start_time?: string | null): boolean {
-  if (!start_time) return true;
-  return start_time >= DAY_START && start_time < DAY_NIGHT_CUTOFF;
-}
-function isNighttime(start_time?: string | null): boolean {
-  if (!start_time) return true;
-  return !isDaytime(start_time);
 }
 
 export async function getEvents(q: EventQuery = {}): Promise<NocturnaEvent[]> {

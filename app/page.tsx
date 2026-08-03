@@ -1,15 +1,13 @@
 import Link from 'next/link';
-import EventCard from '@/components/EventCard';
 import HomeCompass from '@/components/HomeCompass';
 import SubscribeBand from '@/components/SubscribeBand';
 import LocationPicker from '@/components/LocationPicker';
-import DayNightFader, { type DayNight } from '@/components/DayNightFader';
+import HomeTonightSection from '@/components/HomeTonightSection';
 import LAMapBackground from '@/components/LAMapBackground';
 import NocturnaLoop from '@/components/NocturnaLoop';
 import DecorativeType from '@/components/DecorativeType';
 import NeoTribalLines from '@/components/NeoTribalLines';
 import { HomeCompassHoverProvider } from '@/components/HomeCompassHover';
-import EventHoverTarget from '@/components/EventHoverTarget';
 import { getEvents, laToday, isDemo } from '@/lib/data';
 import { NEIGHBORHOODS, CATEGORIES, type CategorySlug } from '@/lib/types';
 import { DEMO_MEDIA } from '@/lib/media';
@@ -19,30 +17,23 @@ export const dynamic = 'force-dynamic';
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ hood?: string; category?: string; when?: string }>;
+  searchParams: Promise<{ hood?: string; category?: string }>;
 }) {
   const sp = await searchParams;
   const district = NEIGHBORHOODS.find(n => n.slug === sp.hood);
   const category = CATEGORIES.find(c => c.slug === sp.category)?.slug as CategorySlug | undefined;
-  const when = sp.when === 'day' || sp.when === 'night' ? sp.when : undefined;
 
   const today = laToday();
-  const tonight = await getEvents({ from: today, to: today, neighborhood: district?.name, category, when, limit: 6 });
-  const upcoming = await getEvents({ from: today, neighborhood: district?.name, category, when, limit: 6 });
+  const tonight = await getEvents({ from: today, to: today, neighborhood: district?.name, category, limit: 6 });
+  const upcoming = await getEvents({ from: today, neighborhood: district?.name, category, limit: 6 });
   const compassEvents = await getEvents({ from: today, limit: 20 });
   const featured = tonight.length ? tonight : upcoming;
-  const homeLink = (params: Record<string, string | undefined>) => {
-    const merged = { hood: sp.hood, category: sp.category, when: sp.when, ...params };
-    const qs = Object.entries(merged).filter(([, v]) => v).map(([k, v]) => `${k}=${encodeURIComponent(v!)}`).join('&');
-    return `/${qs ? '?' + qs : ''}`;
-  };
 
   return (
     <main>
       <HomeCompassHoverProvider>
       <section
         className="container hero-with-compass"
-        data-atmosphere={when === 'night' ? 'night' : 'day'}
         style={{ paddingTop: 'clamp(40px,6vw,90px)' }}
       >
         <DecorativeType />
@@ -81,26 +72,7 @@ export default async function HomePage({
 
         <LocationPicker basePath="/" hood={sp.hood} />
 
-        <DayNightFader basePath="/" value={when as DayNight} params={{ hood: sp.hood, category: sp.category }} />
-
-        <div className="filters" style={{ marginTop: 18 }}>
-          <Link className={`chip ${!sp.category ? 'on' : ''}`} href={homeLink({ category: undefined })}>All</Link>
-          {CATEGORIES.map(c => (
-            <Link key={c.slug} className={`chip ${sp.category === c.slug ? 'on' : ''}`} href={homeLink({ category: sp.category === c.slug ? undefined : c.slug })}>
-              {c.name}
-            </Link>
-          ))}
-        </div>
-
-        <div className="grid" style={{ marginTop: 26 }}>
-          {featured.length
-            ? featured.map(e => (
-              <EventHoverTarget key={e.id} event={e}>
-                <EventCard e={e} />
-              </EventHoverTarget>
-            ))
-            : <div className="empty">Tonight is quiet — check the weekend guide.</div>}
-        </div>
+        <HomeTonightSection events={featured} hood={sp.hood} category={sp.category} />
       </section>
       </HomeCompassHoverProvider>
 

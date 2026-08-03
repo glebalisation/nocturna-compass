@@ -1,7 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 
 export type DayNight = 'day' | 'night' | undefined;
 
@@ -14,98 +13,52 @@ function stopIndex(value: DayNight) {
 }
 
 /** A mechanical toggle switch — a chrome paddle mounted in a recessed slot
- * that physically pivots (real 3D CSS: perspective + rotateX) between Day,
- * All (level) and Night, rather than sliding along a track. */
+ * that physically pivots between Day, All (level) and Night. Purely
+ * controlled: reacts only to a discrete press (click the zone you want,
+ * or arrow/Home/End keys) — never to the cursor merely passing over it,
+ * and never triggers navigation itself. */
 export default function DayNightFader({
-  basePath,
   value,
-  params = {},
+  onChange,
 }: {
-  basePath: string;
   value: DayNight;
-  /** Other current query params to preserve (excluding `when`) — plain data, not a callback, so this stays serializable across the server/client boundary. */
-  params?: Record<string, string | undefined>;
+  onChange: (next: DayNight) => void;
 }) {
-  const router = useRouter();
-  const railRef = useRef<HTMLDivElement>(null);
-  const [dragFrac, setDragFrac] = useState<number | null>(null); // 0..1 while actively dragging
-  const draggingRef = useRef(false);
+  const plateRef = useRef<HTMLDivElement>(null);
+  const idx = stopIndex(value);
+  const tiltDeg = (idx / 2 - 0.5) * (MAX_TILT_DEG * 2);
 
-  const restingFrac = stopIndex(value) / 2;
-  const frac = dragFrac ?? restingFrac;
-  const tiltDeg = (frac - 0.5) * (MAX_TILT_DEG * 2);
-
-  function hrefFor(when: DayNight) {
-    const merged = { ...params, when };
-    const qs = Object.entries(merged).filter(([, v]) => v).map(([k, v]) => `${k}=${encodeURIComponent(v!)}`).join('&');
-    return `${basePath}${qs ? '?' + qs : ''}`;
-  }
-
-  function fracFromClientY(clientY: number) {
-    const rail = railRef.current;
-    if (!rail) return restingFrac;
-    const rect = rail.getBoundingClientRect();
-    return Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
-  }
-
-  function commit(f: number) {
-    const idx = Math.round(f * 2); // 0, 1, 2
-    router.push(hrefFor(STOPS[idx]));
-  }
-
-  function onPointerDown(e: React.PointerEvent<HTMLDivElement>) {
-    (e.target as Element).setPointerCapture?.(e.pointerId);
-    draggingRef.current = true;
-    setDragFrac(fracFromClientY(e.clientY));
-  }
-  function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
-    if (!draggingRef.current) return;
-    setDragFrac(fracFromClientY(e.clientY));
-  }
-  function onPointerUp(e: React.PointerEvent<HTMLDivElement>) {
-    if (!draggingRef.current) return;
-    draggingRef.current = false;
-    const f = fracFromClientY(e.clientY);
-    setDragFrac(null);
-    commit(f);
-  }
-
-  function onRailClick(e: React.MouseEvent<HTMLDivElement>) {
-    if (draggingRef.current) return;
-    commit(fracFromClientY(e.clientY));
+  function push(e: React.MouseEvent<HTMLDivElement>) {
+    const plate = plateRef.current;
+    if (!plate) return;
+    const rect = plate.getBoundingClientRect();
+    const frac = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
+    const zone = frac < 1 / 3 ? 0 : frac < 2 / 3 ? 1 : 2;
+    onChange(STOPS[zone]);
   }
 
   function onKeyDown(e: React.KeyboardEvent) {
-    const idx = stopIndex(value);
-    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); router.push(hrefFor(STOPS[Math.max(0, idx - 1)])); }
-    else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); router.push(hrefFor(STOPS[Math.min(2, idx + 1)])); }
-    else if (e.key === 'Home') { e.preventDefault(); router.push(hrefFor('day')); }
-    else if (e.key === 'End') { e.preventDefault(); router.push(hrefFor('night')); }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); onChange(STOPS[Math.max(0, idx - 1)]); }
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); onChange(STOPS[Math.min(2, idx + 1)]); }
+    else if (e.key === 'Home') { e.preventDefault(); onChange('day'); }
+    else if (e.key === 'End') { e.preventDefault(); onChange('night'); }
   }
 
   return (
     <div className="dn-switch" aria-label="Filter by day or night">
       <span className="dn-switch-label">Day</span>
-      <div
-        className="dn-switch-plate"
-        ref={railRef}
-        onClick={onRailClick}
-        onPointerMove={onPointerMove}
-      >
+      <div className="dn-switch-plate" ref={plateRef} onClick={push}>
         <span className="dn-switch-screw dn-switch-screw-top" aria-hidden="true" />
         <div className="dn-switch-slot">
           <div
-            className={`dn-switch-toggle${dragFrac != null ? ' dragging' : ''}`}
+            className="dn-switch-toggle"
             role="slider"
             tabIndex={0}
             aria-valuemin={0}
             aria-valuemax={2}
-            aria-valuenow={stopIndex(value)}
+            aria-valuenow={idx}
             aria-valuetext={STOP_LABEL[value ?? ''] ?? 'All'}
             style={{ transform: `rotateX(${tiltDeg}deg)` }}
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMove}
-            onPointerUp={onPointerUp}
             onKeyDown={onKeyDown}
           >
             <span className="dn-switch-toggle-cap" />
