@@ -12,6 +12,8 @@ function stopIndex(value: DayNight) {
   return STOPS.indexOf(value);
 }
 
+/** A bigger, vertical sibling of the header's hardware light switch — same
+ * skeuomorphic plate, but taller with a middle detent for "All". */
 export default function DayNightFader({
   basePath,
   value,
@@ -36,11 +38,11 @@ export default function DayNightFader({
     return `${basePath}${qs ? '?' + qs : ''}`;
   }
 
-  function fracFromClientX(clientX: number) {
+  function fracFromClientY(clientY: number) {
     const rail = railRef.current;
     if (!rail) return restingFrac;
     const rect = rail.getBoundingClientRect();
-    return Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    return Math.min(1, Math.max(0, (clientY - rect.top) / rect.height));
   }
 
   function commit(f: number) {
@@ -51,59 +53,63 @@ export default function DayNightFader({
   function onPointerDown(e: React.PointerEvent<HTMLDivElement>) {
     (e.target as Element).setPointerCapture?.(e.pointerId);
     draggingRef.current = true;
-    setDragFrac(fracFromClientX(e.clientX));
+    setDragFrac(fracFromClientY(e.clientY));
   }
   function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
     if (!draggingRef.current) return;
-    setDragFrac(fracFromClientX(e.clientX));
+    setDragFrac(fracFromClientY(e.clientY));
   }
   function onPointerUp(e: React.PointerEvent<HTMLDivElement>) {
     if (!draggingRef.current) return;
     draggingRef.current = false;
-    const f = fracFromClientX(e.clientX);
+    const f = fracFromClientY(e.clientY);
     setDragFrac(null);
     commit(f);
   }
 
   function onRailClick(e: React.MouseEvent<HTMLDivElement>) {
     if (draggingRef.current) return;
-    commit(fracFromClientX(e.clientX));
+    commit(fracFromClientY(e.clientY));
   }
 
   function onKeyDown(e: React.KeyboardEvent) {
     const idx = stopIndex(value);
-    if (e.key === 'ArrowLeft') { e.preventDefault(); router.push(hrefFor(STOPS[Math.max(0, idx - 1)])); }
-    else if (e.key === 'ArrowRight') { e.preventDefault(); router.push(hrefFor(STOPS[Math.min(2, idx + 1)])); }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); router.push(hrefFor(STOPS[Math.max(0, idx - 1)])); }
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); router.push(hrefFor(STOPS[Math.min(2, idx + 1)])); }
     else if (e.key === 'Home') { e.preventDefault(); router.push(hrefFor('day')); }
     else if (e.key === 'End') { e.preventDefault(); router.push(hrefFor('night')); }
   }
 
   return (
-    <div className="hw-fader" aria-label="Filter by day or night">
-      <span className="hw-fader-label hw-fader-label-day">Day</span>
+    <div className="dn-switch" aria-label="Filter by day or night">
+      <span className="dn-switch-label">Day</span>
       <div
-        className="hw-fader-rail"
+        className="dn-switch-plate"
         ref={railRef}
         onClick={onRailClick}
         onPointerMove={onPointerMove}
       >
-        <div className="hw-fader-track" />
-        <div
-          className={`hw-fader-cap${dragFrac != null ? ' dragging' : ''}`}
-          role="slider"
-          tabIndex={0}
-          aria-valuemin={0}
-          aria-valuemax={2}
-          aria-valuenow={stopIndex(value)}
-          aria-valuetext={STOP_LABEL[value ?? ''] ?? 'All'}
-          style={{ left: `${frac * 100}%` }}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onKeyDown={onKeyDown}
-        />
+        <span className="dn-switch-screw dn-switch-screw-top" aria-hidden="true" />
+        <div className="dn-switch-track">
+          <span className="dn-switch-notch" />
+          <div
+            className={`dn-switch-toggle${dragFrac != null ? ' dragging' : ''}`}
+            role="slider"
+            tabIndex={0}
+            aria-valuemin={0}
+            aria-valuemax={2}
+            aria-valuenow={stopIndex(value)}
+            aria-valuetext={STOP_LABEL[value ?? ''] ?? 'All'}
+            style={{ top: `${frac * 100}%` }}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onKeyDown={onKeyDown}
+          />
+        </div>
+        <span className="dn-switch-screw dn-switch-screw-bottom" aria-hidden="true" />
       </div>
-      <span className="hw-fader-label hw-fader-label-night">Night</span>
+      <span className="dn-switch-label">Night</span>
     </div>
   );
 }

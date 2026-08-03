@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 type CursorState = 'default' | 'link' | 'drag' | 'audio';
 
-const DRAG_SELECTOR = '.media-ribbon, .hw-fader-rail, .hw-fader-cap, .sticky-player-progress';
+const DRAG_SELECTOR = '.media-ribbon, .dn-switch-plate, .dn-switch-toggle, .sticky-player-progress';
 const AUDIO_SELECTOR = '.media-card-button, .sticky-player-playpause, .sticky-player-mute';
 const LINK_SELECTOR = 'a, button, [role="button"], input[type="range"], select, .chip';
 
