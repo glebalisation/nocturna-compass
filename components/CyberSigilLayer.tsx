@@ -3,12 +3,11 @@
 import { useEffect, useState } from 'react';
 
 /**
- * Fixed, full-viewport ambient background layer — soft chrome/mercury
- * blobs continuously warped by an animated SVG turbulence/displacement
- * filter, so the surface actually flows like liquid metal rather than
- * reading as a rotating geometric diagram. Present behind every page
- * (added once in layout.tsx). Inert: pointer-events:none, negative
- * z-index, aria-hidden.
+ * Fixed, full-viewport ambient background layer — flowing chrome ribbons
+ * lit with real specular highlights (feSpecularLighting on turbulence,
+ * not just a blurred gradient blob), so the surface reads as reflective
+ * liquid metal rather than fog. Present behind every page (added once in
+ * layout.tsx). Inert: pointer-events:none, negative z-index, aria-hidden.
  */
 export default function CyberSigilLayer() {
   const [animate, setAnimate] = useState(true);
@@ -17,41 +16,47 @@ export default function CyberSigilLayer() {
     setAnimate(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }, []);
 
+  const ribbons = [
+    { cx: 160, cy: 200, rx: 420, ry: 110, rotate: -22 },
+    { cx: 880, cy: 300, rx: 460, ry: 100, rotate: 18 },
+    { cx: 380, cy: 760, rx: 480, ry: 120, rotate: -12 },
+    { cx: 900, cy: 830, rx: 380, ry: 95, rotate: 26 },
+  ];
+
   return (
     <svg className="liquid-layer" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
-        <radialGradient id="liquidChrome" cx="40%" cy="35%" r="65%">
-          <stop offset="0%" stopColor="#F4F3EE" />
-          <stop offset="28%" stopColor="#C7C9C7" />
-          <stop offset="55%" stopColor="#5B5F62" />
-          <stop offset="80%" stopColor="#14171A" />
-          <stop offset="100%" stopColor="#05070B" stopOpacity="0" />
-        </radialGradient>
-
-        <filter id="liquidTurb" x="-40%" y="-40%" width="180%" height="180%">
-          <feTurbulence type="fractalNoise" numOctaves="3" seed="7" stitchTiles="stitch" result="noise">
+        <filter id="liquidChrome" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="softSource" />
+          <feTurbulence type="fractalNoise" numOctaves="2" seed="7" stitchTiles="stitch" result="noise">
             {animate && (
               <animate
                 attributeName="baseFrequency"
-                values="0.0035 0.006;0.007 0.004;0.0035 0.006"
-                dur="60s"
+                values="0.003 0.008;0.009 0.003;0.003 0.008"
+                dur="52s"
                 repeatCount="indefinite"
               />
             )}
           </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="90" xChannelSelector="R" yChannelSelector="G" />
+          <feDisplacementMap in="softSource" in2="noise" scale="34" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+          <feSpecularLighting in="noise" surfaceScale="6" specularConstant="1.1" specularExponent="16" lightingColor="#ffffff" result="spec">
+            <feDistantLight azimuth="235" elevation="52" />
+          </feSpecularLighting>
+          <feComposite in="spec" in2="displaced" operator="in" result="specClipped" />
+          <feComposite in="specClipped" in2="displaced" operator="arithmetic" k1="0" k2="1" k3="1.35" k4="0" />
         </filter>
       </defs>
 
-      <g className="liquid-blob liquid-blob-1">
-        <ellipse cx="180" cy="200" rx="290" ry="250" fill="url(#liquidChrome)" filter="url(#liquidTurb)" />
-      </g>
-      <g className="liquid-blob liquid-blob-2">
-        <ellipse cx="850" cy="360" rx="260" ry="300" fill="url(#liquidChrome)" filter="url(#liquidTurb)" />
-      </g>
-      <g className="liquid-blob liquid-blob-3">
-        <ellipse cx="380" cy="860" rx="320" ry="260" fill="url(#liquidChrome)" filter="url(#liquidTurb)" />
-      </g>
+      {ribbons.map((r, i) => (
+        <g key={i} className={`liquid-blob liquid-blob-${(i % 3) + 1}`}>
+          <ellipse
+            cx={r.cx} cy={r.cy} rx={r.rx} ry={r.ry}
+            transform={`rotate(${r.rotate} ${r.cx} ${r.cy})`}
+            fill="#14171A"
+            filter="url(#liquidChrome)"
+          />
+        </g>
+      ))}
     </svg>
   );
 }

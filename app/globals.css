@@ -375,8 +375,8 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
    every page. Soft mercury-like blobs continuously warped by an animated
    SVG turbulence/displacement filter, so the surface actually flows
    rather than reading as a rotating geometric diagram. */
-.liquid-layer{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;opacity:.5}
-.liquid-blob{transform-origin:500px 500px;filter:blur(7px)}
+.liquid-layer{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;opacity:.55}
+.liquid-blob{transform-origin:500px 500px}
 .liquid-blob-1{animation:liquid-drift-a 56s ease-in-out infinite}
 .liquid-blob-2{animation:liquid-drift-b 72s ease-in-out infinite}
 .liquid-blob-3{animation:liquid-drift-c 64s ease-in-out infinite}
