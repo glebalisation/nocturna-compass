@@ -331,7 +331,6 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
 .hero-with-compass[data-atmosphere="night"]{
   background-color:#0F1512;
   padding:clamp(28px,4vw,48px) clamp(20px,4vw,40px) clamp(36px,5vw,56px);
-  margin:0 calc(-1 * clamp(20px,4vw,40px));
   --ink:#0F1512; --panel:#1A2119; --panel-2:#1D251F; --line:#333D35;
   --text:#F1F0EA; --muted:#8FA096;
   --glow:#F4F3EE; --green:#3E8F63; --green-deep:#2F6B4A;
