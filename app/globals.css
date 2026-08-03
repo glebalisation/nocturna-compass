@@ -243,7 +243,7 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
 .wk-item:hover b{color:var(--glow)}
 
 /* compass */
-.compass-page{font-family:'Montserrat',var(--sans)}
+.compass-page{font-family:'Montserrat',var(--sans);position:relative}
 .compass-start{margin-top:40px;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
 .compass-status{font-family:'Montserrat',var(--sans);font-size:13px;font-weight:400;color:var(--muted);max-width:420px}
 .compass-status.err{color:#f0a3a3}
