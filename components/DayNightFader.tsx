@@ -7,13 +7,15 @@ export type DayNight = 'day' | 'night' | undefined;
 
 const STOPS: DayNight[] = ['day', undefined, 'night'];
 const STOP_LABEL: Record<string, string> = { day: 'Day', night: 'Night' };
+const MAX_TILT_DEG = 34;
 
 function stopIndex(value: DayNight) {
   return STOPS.indexOf(value);
 }
 
-/** A bigger, vertical sibling of the header's hardware light switch — same
- * skeuomorphic plate, but taller with a middle detent for "All". */
+/** A mechanical toggle switch — a chrome paddle mounted in a recessed slot
+ * that physically pivots (real 3D CSS: perspective + rotateX) between Day,
+ * All (level) and Night, rather than sliding along a track. */
 export default function DayNightFader({
   basePath,
   value,
@@ -31,6 +33,7 @@ export default function DayNightFader({
 
   const restingFrac = stopIndex(value) / 2;
   const frac = dragFrac ?? restingFrac;
+  const tiltDeg = (frac - 0.5) * (MAX_TILT_DEG * 2);
 
   function hrefFor(when: DayNight) {
     const merged = { ...params, when };
@@ -90,8 +93,7 @@ export default function DayNightFader({
         onPointerMove={onPointerMove}
       >
         <span className="dn-switch-screw dn-switch-screw-top" aria-hidden="true" />
-        <div className="dn-switch-track">
-          <span className="dn-switch-notch" />
+        <div className="dn-switch-slot">
           <div
             className={`dn-switch-toggle${dragFrac != null ? ' dragging' : ''}`}
             role="slider"
@@ -100,12 +102,14 @@ export default function DayNightFader({
             aria-valuemax={2}
             aria-valuenow={stopIndex(value)}
             aria-valuetext={STOP_LABEL[value ?? ''] ?? 'All'}
-            style={{ top: `${frac * 100}%` }}
+            style={{ transform: `rotateX(${tiltDeg}deg)` }}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onKeyDown={onKeyDown}
-          />
+          >
+            <span className="dn-switch-toggle-cap" />
+          </div>
         </div>
         <span className="dn-switch-screw dn-switch-screw-bottom" aria-hidden="true" />
       </div>
