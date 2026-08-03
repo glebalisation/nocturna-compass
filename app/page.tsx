@@ -78,7 +78,7 @@ export default async function HomePage({
 
       <section className="container" style={{ paddingTop: 0 }}>
         <div className="section-head">
-          <h2>From the <span className="accent">Nocturna</span> loop</h2>
+          <h2>From the <span className="accent">Compass</span> loop</h2>
         </div>
         <NocturnaLoop items={DEMO_MEDIA} />
       </section>

@@ -4,7 +4,7 @@
   --green-deep:#1A1D20; --green:#1A1D20; --glow:#05070B;
   --text:#1A1D20; --muted:#6C7075;
   /* Restrained accent, used sparingly (compass pointer, pulses) — not the general UI green above. */
-  --accent-pointer:#173D2B; --accent-pointer-light:#2E6B4C;
+  --accent-pointer:#1F493D; --accent-pointer-light:#38836E;
   --mono:'Montserrat', system-ui, sans-serif;
   --sans:'Montserrat', system-ui, sans-serif;
 }
@@ -453,7 +453,7 @@ html.has-compass-cursor .compass-cursor{opacity:1}
 .media-card-static{cursor:default}
 .media-card-button{text-align:left;font:inherit;padding:0;color:inherit;cursor:pointer}
 .media-card-visual{position:relative;height:108px;display:flex;flex-direction:column;justify-content:space-between;padding:12px 14px;
-  background:linear-gradient(135deg,rgba(23,61,43,.14) 0%,rgba(23,61,43,.04) 55%,transparent 100%),var(--panel-2)}
+  background:linear-gradient(135deg,rgba(31,73,61,.14) 0%,rgba(31,73,61,.04) 55%,transparent 100%),var(--panel-2)}
 .media-card-icon{font-size:26px;line-height:1;color:var(--accent-pointer);opacity:.8;font-weight:600}
 .media-card-visual .tag{align-self:flex-start;background:rgba(5,7,11,.06);color:var(--text);border-color:var(--line)}
 .media-card-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:7px;flex:1}
@@ -487,7 +487,7 @@ a.loop-block{cursor:pointer}
 .loop-block-lg h3{font-size:23px}
 .loop-block-sm{min-height:104px}
 .loop-block-md{min-height:150px}
-.loop-block-lg{min-height:210px;background:linear-gradient(150deg,rgba(23,61,43,.1) 0%,transparent 60%),var(--panel-2)}
+.loop-block-lg{min-height:210px;background:linear-gradient(150deg,rgba(31,73,61,.1) 0%,transparent 60%),var(--panel-2)}
 .loop-block-meta{margin-top:auto;display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.04em}
 .loop-block-go{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-pointer);font-weight:700}
 @media(max-width:760px){
