@@ -371,35 +371,6 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
 .neo-tribal-divider{position:static;display:block;width:100%;height:64px;margin:8px 0}
 @media (prefers-reduced-motion: reduce){.neo-tribal-path{animation:none}}
 
-/* liquid chrome — site-wide ambient background layer, present behind
-   every page. Soft mercury-like blobs continuously warped by an animated
-   SVG turbulence/displacement filter, so the surface actually flows
-   rather than reading as a rotating geometric diagram. */
-.liquid-layer{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;opacity:.55;will-change:transform}
-.liquid-blob{transform-origin:500px 500px;will-change:transform}
-.liquid-blob-1{animation:liquid-drift-a 56s ease-in-out infinite}
-.liquid-blob-2{animation:liquid-drift-b 72s ease-in-out infinite}
-.liquid-blob-3{animation:liquid-drift-c 64s ease-in-out infinite}
-@keyframes liquid-drift-a{
-  0%{transform:translate(0,0) scale(1)}
-  33%{transform:translate(4%,-3%) scale(1.1)}
-  66%{transform:translate(-3%,2.5%) scale(.94)}
-  100%{transform:translate(0,0) scale(1)}
-}
-@keyframes liquid-drift-b{
-  0%{transform:translate(0,0) scale(1)}
-  40%{transform:translate(-4%,3%) scale(.92)}
-  75%{transform:translate(3%,-2%) scale(1.08)}
-  100%{transform:translate(0,0) scale(1)}
-}
-@keyframes liquid-drift-c{
-  0%{transform:translate(0,0) scale(1) rotate(0deg)}
-  50%{transform:translate(2%,4%) scale(1.12) rotate(4deg)}
-  100%{transform:translate(0,0) scale(1) rotate(0deg)}
-}
-@media(max-width:760px){.liquid-layer{opacity:.35}}
-@media (prefers-reduced-motion: reduce){.liquid-blob{animation:none}}
-
 /* custom compass cursor — desktop, fine-pointer only */
 html.has-compass-cursor,html.has-compass-cursor *:not(input):not(textarea){cursor:none}
 .compass-cursor{position:fixed;top:0;left:0;width:0;height:0;pointer-events:none;z-index:9999;opacity:0;transition:opacity .15s}
