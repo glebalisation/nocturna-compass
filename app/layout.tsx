@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import PlayerProvider from '@/components/PlayerProvider';
 import StickyPlayer from '@/components/StickyPlayer';
 import CompassCursor from '@/components/CompassCursor';
+import CyberSigilLayer from '@/components/CyberSigilLayer';
 
 const site = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nocturnacompass.com';
 
@@ -33,8 +34,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('nocturna-theme');if(t==='night')document.documentElement.dataset.theme='night';}catch(e){}`,
+          }}
+        />
       </head>
       <body>
+        <CyberSigilLayer />
         <PlayerProvider>
           <Header />
           {children}

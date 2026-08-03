@@ -5,7 +5,7 @@ import SubscribeBand from '@/components/SubscribeBand';
 import LocationPicker from '@/components/LocationPicker';
 import DayNightFader, { type DayNight } from '@/components/DayNightFader';
 import LAMapBackground from '@/components/LAMapBackground';
-import MediaRibbon from '@/components/MediaRibbon';
+import NocturnaLoop from '@/components/NocturnaLoop';
 import DecorativeType from '@/components/DecorativeType';
 import NeoTribalLines from '@/components/NeoTribalLines';
 import { HomeCompassHoverProvider } from '@/components/HomeCompassHover';
@@ -108,7 +108,7 @@ export default async function HomePage({
         <div className="section-head">
           <h2>From the <span className="accent">Nocturna</span> loop</h2>
         </div>
-        <MediaRibbon items={DEMO_MEDIA} />
+        <NocturnaLoop items={DEMO_MEDIA} />
       </section>
 
       <SubscribeBand source="homepage" />

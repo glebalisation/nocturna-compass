@@ -2,6 +2,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import ThemeSwitch from './ThemeSwitch';
+
+const PRIMARY_LINKS = [
+  { href: '/events', label: 'Events' },
+  { href: '/submit', label: 'Submit' },
+  { href: '/compass', label: 'Compass' },
+  { href: '/about', label: 'About us' },
+];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -12,12 +20,19 @@ export default function Header() {
       <div className="container">
         <Link href="/" className="logo" aria-label="Nocturna Compass home" onClick={close}>
           <img src="/nocturna-symbol.png" alt="" />
-          Nocturna&nbsp;<span>Compass</span>
+          <span className="logo-thin">Nocturna</span>
+          <span className="logo-bold">Compass</span>
         </Link>
 
+        <nav className="nav-primary-list" aria-label="Main">
+          {PRIMARY_LINKS.map((l) => (
+            <Link key={l.href} href={l.href} onClick={close}>{l.label}</Link>
+          ))}
+        </nav>
+
         <div className="nav-right">
-          <Link href="/events" className="nav-primary" onClick={close}>Events</Link>
           <Link href="/#subscribe" className="nav-cta" onClick={close}>Weekly guide</Link>
+          <ThemeSwitch />
           <button
             type="button"
             className="nav-toggle"
@@ -32,17 +47,13 @@ export default function Header() {
                 <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
               )}
             </svg>
-            <span className="nav-toggle-label">Menu</span>
           </button>
         </div>
 
-        <nav className={`nav-menu${open ? ' open' : ''}`} aria-label="Secondary">
-          <Link href="/tonight" onClick={close}>Tonight in LA</Link>
-          <Link href="/weekend" onClick={close}>This weekend</Link>
-          <Link href="/about" onClick={close}>About us</Link>
-          <Link href="/submit" onClick={close}>Submit an event</Link>
-          <a href="https://instagram.com/nocturna_la_" target="_blank" rel="noopener" onClick={close}>Instagram</a>
-          <Link href="/#subscribe" onClick={close}>Newsletter</Link>
+        <nav className={`nav-menu${open ? ' open' : ''}`} aria-label="Mobile">
+          {PRIMARY_LINKS.map((l) => (
+            <Link key={l.href} href={l.href} onClick={close}>{l.label}</Link>
+          ))}
         </nav>
       </div>
     </header>

@@ -212,13 +212,29 @@ export default function HomeCompass({ events }: { events: NocturnaEvent[] }) {
     <div className="home-compass" ref={wrapRef} onMouseMove={onMove} onMouseLeave={onLeave}>
       <svg className="home-compass-dial" viewBox="0 0 300 300" role="img" aria-label="Interactive compass of tonight's events">
         <defs>
+          <radialGradient id="plateGrad" cx="35%" cy="28%" r="75%">
+            <stop offset="0%" stopColor="#2A2E32" />
+            <stop offset="55%" stopColor="#14171A" />
+            <stop offset="100%" stopColor="#05070B" />
+          </radialGradient>
+          <linearGradient id="chromeRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#F4F3EE" />
+            <stop offset="20%" stopColor="#84888A" />
+            <stop offset="42%" stopColor="#EDEEEC" />
+            <stop offset="58%" stopColor="#4A4E51" />
+            <stop offset="78%" stopColor="#C7C9C7" />
+            <stop offset="100%" stopColor="#EDEEEC" />
+          </linearGradient>
           <linearGradient id="needleGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#173D2B" />
-            <stop offset="100%" stopColor="#2E6B4C" />
+            <stop offset="0%" stopColor="#0F3D25" />
+            <stop offset="50%" stopColor="#1C5C3B" />
+            <stop offset="100%" stopColor="#0A2617" />
           </linearGradient>
         </defs>
 
-        <circle className="compass-ring" cx={CENTER} cy={CENTER} r={R_OUTER} />
+        <circle className="compass-plate" cx={CENTER} cy={CENTER} r={R_OUTER + 8} />
+        <circle className="compass-ring-heavy" cx={CENTER} cy={CENTER} r={R_OUTER} />
+        <circle className="compass-ring-heavy inner" cx={CENTER} cy={CENTER} r={R_OUTER - 14} />
         <circle className="compass-ring" cx={CENTER} cy={CENTER} r={R_LABEL} />
 
         {ticks.map((deg) => {
@@ -266,8 +282,7 @@ export default function HomeCompass({ events }: { events: NocturnaEvent[] }) {
         })}
 
         <g className="home-compass-needle" transform={`rotate(${rotorAngle.toFixed(2)} ${CENTER} ${CENTER})`}>
-          <polygon className="compass-needle-tip" points="150,30 163,150 150,134 137,150" />
-          <polygon className="compass-needle-tail" points="150,270 160,150 150,166 140,150" />
+          <polygon className="compass-needle" points="150,22 163,150 150,180 137,150" />
         </g>
 
         <circle className="compass-center-dot" cx={CENTER} cy={CENTER} r="5" />

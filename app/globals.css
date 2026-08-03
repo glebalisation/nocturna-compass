@@ -22,29 +22,65 @@ main{min-height:70vh;padding-top:86px}
 section{padding:clamp(48px,7vw,96px) 0}
 
 /* header */
-.site-header{position:fixed;top:0;left:0;right:0;z-index:50;background:linear-gradient(to bottom,rgba(244,243,238,.96),rgba(244,243,238,.82));backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.site-header .container{display:flex;align-items:center;justify-content:space-between;padding-top:16px;padding-bottom:16px;position:relative}
-.logo{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:.06em;font-size:14px;text-transform:uppercase;color:var(--glow)}
-.logo img{height:30px;width:auto;display:block}
-.logo span{color:var(--text);font-weight:900;letter-spacing:.08em}
-.nav-right{display:flex;align-items:center;gap:18px}
-.nav-primary{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text);font-weight:700;transition:color .2s}
-.nav-primary:hover{color:var(--green)}
+.site-header{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--ink);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);transition:background-color .4s ease,border-color .4s ease}
+.site-header .container{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-top:16px;padding-bottom:16px;position:relative}
+.logo{display:flex;align-items:center;gap:9px;font-size:14px;text-transform:uppercase;color:var(--glow)}
+.logo img{height:30px;width:auto;display:block;transition:filter .4s ease}
+.logo-thin{font-weight:300;letter-spacing:.05em}
+.logo-bold{font-weight:800;letter-spacing:.03em}
+.nav-primary-list{display:flex;gap:clamp(16px,2.2vw,30px);align-items:center;flex:1;justify-content:center}
+.nav-primary-list a{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text);font-weight:700;transition:color .2s}
+.nav-primary-list a:hover{color:var(--green)}
+.nav-right{display:flex;align-items:center;gap:16px}
 .nav-cta{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink)!important;background:var(--glow);padding:9px 15px;border-radius:2px;font-weight:700;white-space:nowrap}
 .nav-cta:hover{background:var(--green-deep)}
-.nav-toggle{display:flex;align-items:center;gap:8px;background:none;border:none;padding:6px;margin:-6px 0;cursor:pointer;color:var(--glow)}
+.nav-toggle{display:none;align-items:center;background:none;border:none;padding:6px;margin:-6px 0;cursor:pointer;color:var(--glow);flex:none}
 .nav-toggle svg{width:20px;height:20px;display:block}
-.nav-toggle-label{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase}
-.nav-menu{position:absolute;top:100%;left:0;right:0;display:flex;flex-direction:column;align-items:stretch;gap:0;background:var(--ink);border-bottom:1px solid var(--line);max-height:0;overflow:hidden;transition:max-height .25s ease;box-shadow:0 12px 24px rgba(5,7,11,.08)}
-.nav-menu a{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);transition:color .2s;padding:15px clamp(20px,4vw,48px);border-bottom:1px solid var(--line)}
-.nav-menu a:hover{color:var(--glow)}
-.nav-menu.open{max-height:520px}
+.nav-menu{display:none}
+@media(max-width:900px){
+  .nav-primary-list{display:none}
+  .nav-toggle{display:flex}
+  .nav-menu{position:absolute;top:100%;left:0;right:0;display:flex;flex-direction:column;align-items:stretch;gap:0;background:var(--ink);border-bottom:1px solid var(--line);max-height:0;overflow:hidden;transition:max-height .25s ease;box-shadow:0 12px 24px rgba(5,7,11,.08)}
+  .nav-menu a{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);transition:color .2s;padding:15px clamp(20px,4vw,48px);border-bottom:1px solid var(--line)}
+  .nav-menu a:hover{color:var(--glow)}
+  .nav-menu.open{max-height:520px}
+}
 @media(max-width:480px){
   .nav-right{gap:8px}
-  .logo span{display:none}
+  .logo-bold{display:none}
   .nav-cta{padding:8px 11px;font-size:10px}
-  .nav-toggle-label{display:none}
 }
+
+/* day/night hardware light switch — always a literal white plastic
+   wall-plate object, independent of the site's own theme colors. */
+.light-switch{position:relative;width:22px;height:40px;border-radius:4px;border:none;cursor:pointer;flex:none;padding:0;
+  background:linear-gradient(155deg,#fdfdfc 0%,#e7e6e2 55%,#d3d2ce 100%);
+  box-shadow:0 1px 3px rgba(5,7,11,.3),inset 0 0 0 1px rgba(5,7,11,.1)}
+.light-switch-screw{position:absolute;left:50%;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fff,#9a9a96 70%,#6c6c68);box-shadow:0 0 0 1px rgba(5,7,11,.15)}
+.light-switch-screw-top{top:4px}
+.light-switch-screw-bottom{bottom:4px}
+.light-switch-toggle{position:absolute;left:50%;top:9px;width:10px;height:15px;margin-left:-5px;border-radius:2px;
+  background:linear-gradient(155deg,#f6f5f2 0%,#c9c8c3 45%,#87867f 55%,#a9a8a2 100%);
+  box-shadow:0 1px 2px rgba(5,7,11,.4),inset 0 1px 0 rgba(255,255,255,.65);
+  transition:transform .2s cubic-bezier(.3,.9,.4,1)}
+.light-switch-toggle::after{content:"";position:absolute;left:50%;top:3px;width:1px;height:5px;background:rgba(5,7,11,.3);transform:translateX(-50%)}
+.light-switch-toggle.is-night{transform:translateY(11px)}
+.light-switch:hover .light-switch-toggle{filter:brightness(1.06)}
+.light-switch:focus-visible{outline:2px solid var(--glow);outline-offset:3px;border-radius:4px}
+
+/* night theme — same palette as the homepage hero's night atmosphere,
+   scoped to the whole document via a data attribute on <html>. */
+html[data-theme="night"]{
+  --ink:#0F1512; --panel:#1A2119; --panel-2:#1D251F; --line:#333D35;
+  --text:#F1F0EA; --muted:#8FA096;
+  --glow:#F4F3EE; --green:#3E8F63; --green-deep:#2F6B4A;
+  --accent-pointer:#4CA377; --accent-pointer-light:#79C79E;
+}
+html[data-theme="night"] body{transition:background-color .4s ease,color .4s ease}
+html[data-theme="night"] .logo img{filter:invert(1) brightness(1.08)}
+html[data-theme="night"] .card-visual::after,
+html[data-theme="night"] .tag{background:rgba(0,0,0,.6)}
 
 /* type */
 h1,h2{font-weight:850;text-transform:uppercase;line-height:1;letter-spacing:-.01em;font-stretch:118%}
@@ -89,6 +125,30 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
 .hw-fader-cap.dragging{transition:none;cursor:grabbing}
 .hw-fader-cap:focus-visible{outline:2px solid var(--accent-pointer);outline-offset:3px}
 @media(max-width:480px){.hw-fader-rail{width:132px}}
+
+/* events page hour fader — a longer, continuous version of the hardware
+   fader cap, graded in hours, with a ruler of tick marks underneath. */
+.hour-fader{margin:22px 0 8px;user-select:none}
+.hour-fader-readout{display:flex;align-items:baseline;gap:8px;margin-bottom:12px;font-family:var(--mono);text-transform:uppercase}
+.hour-fader-readout span{color:var(--muted);font-size:10px;letter-spacing:.18em}
+.hour-fader-readout strong{color:var(--glow);font-size:clamp(18px,2.2vw,26px);font-weight:700}
+.hour-fader-rail{position:relative;width:100%;height:34px;display:flex;align-items:center;cursor:pointer;touch-action:none}
+.hour-fader-track{position:absolute;left:2px;right:2px;top:50%;height:4px;transform:translateY(-50%);border-radius:2px;
+  background:linear-gradient(90deg,var(--line) 0%,var(--accent-pointer-light) 60%,var(--accent-pointer) 100%);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
+.hour-fader-cap{position:absolute;top:50%;width:30px;height:30px;margin-left:-15px;transform:translateY(-50%);border-radius:6px;
+  background:linear-gradient(160deg,#eceeec 0%,#c3c6c9 45%,#8b8e8c 55%,#a9acaa 100%);
+  border:1px solid rgba(0,0,0,.28);
+  box-shadow:0 3px 6px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.55);
+  cursor:grab;touch-action:none;transition:left .18s cubic-bezier(.3,.9,.4,1)}
+.hour-fader-cap::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:2px;height:16px;
+  background:rgba(0,0,0,.32);box-shadow:-6px 0 0 rgba(0,0,0,.2),6px 0 0 rgba(0,0,0,.2)}
+.hour-fader-cap.dragging{transition:none;cursor:grabbing}
+.hour-fader-cap:focus-visible{outline:2px solid var(--accent-pointer);outline-offset:3px}
+.hour-fader-ruler{height:30px;display:grid;grid-template-columns:repeat(24,1fr);margin-top:6px}
+.hour-fader-ruler span{position:relative;border-left:1px solid var(--line);font-family:var(--mono);font-size:8px;letter-spacing:.02em;color:var(--muted);padding-top:10px;white-space:nowrap;text-align:center}
+.hour-fader-ruler span.major{border-left-color:var(--muted);font-weight:700}
+@media(max-width:640px){.hour-fader-ruler span{font-size:0}.hour-fader-ruler span.major{font-size:7px}}
 
 /* location picker */
 .location-picker{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:20px 0 8px}
@@ -180,16 +240,20 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
 .compass-status{font-family:'Montserrat',var(--sans);font-size:13px;font-weight:400;color:var(--muted);max-width:420px}
 .compass-status.err{color:#f0a3a3}
 .compass-wrap{margin-top:40px;display:flex;flex-direction:column;align-items:center;gap:26px;max-width:420px}
-.compass-dial{width:min(72vw,300px);height:min(72vw,300px);filter:drop-shadow(0 0 26px rgba(5,7,11,.14))}
-.compass-ring{fill:none;stroke:var(--line);stroke-width:1.5}
-.compass-tick{stroke:var(--line);stroke-width:1.5}
-.compass-tick.major{stroke:#1A1D20;stroke-width:2.5}
-.compass-tick.cardinal{stroke:var(--text);stroke-width:3.5}
-.compass-label{font-family:'Montserrat',var(--sans);font-size:12px;font-weight:700;letter-spacing:.04em;fill:var(--muted);text-anchor:middle;dominant-baseline:middle}
-.compass-label.north{fill:var(--glow)}
-.compass-center-dot{fill:var(--text)}
-.compass-needle-tip{fill:url(#needleGrad)}
-.compass-needle-tail{fill:rgba(23,61,43,.32)}
+.compass-dial{width:min(72vw,300px);height:min(72vw,300px);filter:drop-shadow(0 16px 34px rgba(5,7,11,.4))}
+/* The dial is a self-contained heavy chrome instrument — it keeps its own
+   plate/ring/label colors regardless of the site's day/night theme. */
+.compass-plate{fill:url(#plateGrad)}
+.compass-ring-heavy{fill:none;stroke:url(#chromeRingGrad);stroke-width:7}
+.compass-ring-heavy.inner{stroke-width:2.5}
+.compass-ring{fill:none;stroke:#4A4E51;stroke-width:1}
+.compass-tick{stroke:#4A4E51;stroke-width:1.5}
+.compass-tick.major{stroke:#9A9D9B;stroke-width:2}
+.compass-tick.cardinal{stroke:#F4F3EE;stroke-width:3}
+.compass-label{font-family:'Montserrat',var(--sans);font-size:14px;font-weight:800;letter-spacing:.04em;fill:#C7C9C7;text-anchor:middle;dominant-baseline:middle}
+.compass-label.north{fill:#F4F3EE}
+.compass-center-dot{fill:#F4F3EE;stroke:#15181B;stroke-width:1.5}
+.compass-needle{fill:url(#needleGrad);stroke:#0A2617;stroke-width:.5}
 .compass-readout{text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;font-family:'Montserrat',var(--sans)}
 .compass-party-name{font-size:18px;font-weight:600}
 .compass-party-meta{font-size:12.5px;font-weight:400;color:var(--muted)}
@@ -300,6 +364,24 @@ h1 em,h2 em{font-style:normal;color:var(--glow)}
 .neo-tribal-divider{position:static;display:block;width:100%;height:64px;margin:8px 0}
 @media (prefers-reduced-motion: reduce){.neo-tribal-path{animation:none}}
 
+/* cyber sigilism — site-wide moving background layer, present behind
+   every page. Angular, chrome/holographic-stroked, deliberately more
+   visible than the quieter NeoTribalLines accents. */
+.sigil-layer{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none}
+.sigil-group{fill:none;stroke:url(#sigilChrome);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.5;transform-origin:500px 500px}
+.sigil-group circle{fill:url(#sigilChrome);stroke:none}
+.sigil-group-1{animation:sigil-spin-a 120s linear infinite,sigil-draw 22s linear infinite}
+.sigil-group-2{animation:sigil-spin-b 150s linear infinite,sigil-draw 28s linear infinite reverse}
+.sigil-group-3{animation:sigil-spin-a 90s linear infinite reverse,sigil-draw 18s linear infinite}
+.sigil-group-4{animation:sigil-spin-b 140s linear infinite,sigil-draw 26s linear infinite}
+.sigil-group-5{animation:sigil-spin-a 110s linear infinite,sigil-draw 24s linear infinite reverse}
+.sigil-group path{stroke-dasharray:16 11}
+@keyframes sigil-draw{to{stroke-dashoffset:-540}}
+@keyframes sigil-spin-a{to{transform:rotate(360deg)}}
+@keyframes sigil-spin-b{to{transform:rotate(-360deg)}}
+@media(max-width:760px){.sigil-layer{opacity:.7}}
+@media (prefers-reduced-motion: reduce){.sigil-group{animation:none}}
+
 /* custom compass cursor — desktop, fine-pointer only */
 html.has-compass-cursor,html.has-compass-cursor *:not(input):not(textarea){cursor:none}
 .compass-cursor{position:fixed;top:0;left:0;width:0;height:0;pointer-events:none;z-index:9999;opacity:0;transition:opacity .15s}
@@ -342,13 +424,13 @@ html.has-compass-cursor .compass-cursor{opacity:1}
 .home-compass{position:relative;width:clamp(260px,30vw,420px);aspect-ratio:1;cursor:crosshair}
 .home-compass-dial{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 30px rgba(5,7,11,.12))}
 .home-compass-needle{transition:transform .18s ease-out}
-.home-compass-mark{fill:var(--line);transition:r .2s ease,fill .2s ease}
-.home-compass-mark.active{fill:var(--accent-pointer)}
+.home-compass-mark{fill:#8B8E8C;transition:r .2s ease,fill .2s ease}
+.home-compass-mark.active{fill:#3E8F63}
 .home-compass-mark.pulsing{animation:mark-pulse .48s ease-out}
 @keyframes mark-pulse{
   0%{r:4.5}
-  40%{r:9;fill:var(--accent-pointer-light)}
-  100%{r:4.5;fill:var(--accent-pointer)}
+  40%{r:9;fill:#79C79E}
+  100%{r:4.5;fill:#3E8F63}
 }
 @media (prefers-reduced-motion: reduce){.home-compass-mark.pulsing{animation:none}}
 
@@ -393,6 +475,38 @@ html.has-compass-cursor .compass-cursor{opacity:1}
 .media-card-source{margin-top:auto;padding-top:9px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .media-card-go{color:var(--accent-pointer);font-weight:700}
 @media(max-width:520px){.media-card{width:78vw}}
+
+/* Nocturna loop — vertical, mixed-size editorial column feed (replaces the
+   old horizontal ribbon), styled like a scrolling magazine spread. */
+.nocturna-loop{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  height:clamp(460px,58vw,680px);overflow:hidden;mask-image:linear-gradient(to bottom,transparent,#000 8%,#000 92%,transparent);
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 8%,#000 92%,transparent)}
+.loop-col{overflow:hidden;height:100%}
+.loop-col-track{display:flex;flex-direction:column;gap:16px;width:100%;animation-name:loop-drift-down;animation-timing-function:linear;animation-iteration-count:infinite}
+.nocturna-loop:hover .loop-col-track,.nocturna-loop:focus-within .loop-col-track{animation-play-state:paused}
+@keyframes loop-drift-down{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+
+.loop-block{display:flex;flex-direction:column;gap:10px;padding:20px;border:1px solid var(--line);border-radius:6px;
+  background:var(--panel);transition:border-color .2s;text-align:left;font:inherit;color:inherit;cursor:pointer}
+a.loop-block,article.loop-block{cursor:default}
+a.loop-block{cursor:pointer}
+.loop-block:hover{border-color:var(--green)}
+.loop-block-static{cursor:default}
+.loop-block-top{display:flex;align-items:center;justify-content:space-between}
+.loop-block-icon{font-size:22px;line-height:1;color:var(--accent-pointer);opacity:.85;font-weight:600}
+.loop-block h3{font-weight:800;text-transform:none;line-height:1.2}
+.loop-block-sm h3{font-size:14px}
+.loop-block-md h3{font-size:17px}
+.loop-block-lg h3{font-size:23px}
+.loop-block-sm{min-height:104px}
+.loop-block-md{min-height:150px}
+.loop-block-lg{min-height:210px;background:linear-gradient(150deg,rgba(23,61,43,.1) 0%,transparent 60%),var(--panel-2)}
+.loop-block-meta{margin-top:auto;display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.04em}
+.loop-block-go{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-pointer);font-weight:700}
+@media(max-width:760px){
+  .nocturna-loop{grid-template-columns:1fr;height:clamp(420px,110vw,560px)}
+  .loop-col:last-child{display:none}
+}
 
 /* sticky media player */
 body.has-sticky-player{padding-bottom:64px}
